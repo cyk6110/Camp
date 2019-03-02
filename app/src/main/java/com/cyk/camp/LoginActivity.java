@@ -1,6 +1,7 @@
 package com.cyk.camp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,24 +11,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static com.cyk.camp.MapsActivity.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
+    private int n = 0;
+    private Team t;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         db = FirebaseDatabase.getInstance();
 
+        context = this;
 
         //completed
         if(getSharedPreferences("data", MODE_PRIVATE)
@@ -78,32 +84,69 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "請填入隊名", Toast.LENGTH_SHORT).show();
         }
         else if(s.equals("admin")){
-            Intent myIntent = new Intent(this, AdminActivity.class);
+            Intent myIntent = new Intent(this, AddQuestActivity.class);
             startActivity(myIntent);
             //myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             //finish();
             Log.d("tag_admin", "admin mode");
         }
         else {
-            //push team info to db
-            Team t = new Team(s);
-            DatabaseReference myRef = db.getReference();
-            String key = myRef.child("teams").push().getKey();
-            if(key != null) myRef.child("teams").child(key).setValue(t);
+
+            t = new Team(s);
+            final DatabaseReference myRef = db.getReference();
+            final String key = myRef.child("teams").push().getKey();
 
 
+            Query q = myRef.child("quests");
+            //get total number of quests
+            q.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    n = (int)snapshot.getChildrenCount();
+                    Log.d("tag_children_count", String.valueOf(n));
 
-            //store the team key
-            SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-            pref.edit().putString("team_key", key)
-                    .putBoolean("has_team", true)
-                    .apply();
+                    //random shuffle
+                    List<Integer> random = new ArrayList<>();
 
-            //start map activity
-            Intent myIntent = new Intent(this, MapsActivity.class);
-            startActivity(myIntent);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            finish();
+                    for(int i = 0; i < n; i++)
+                        random.add(i);
+
+
+                    Collections.shuffle(random);
+
+                    t.current_quest = random.get(0);
+
+                    //push team info to db
+                    if(key != null) myRef.child("teams").child(key).setValue(t);
+
+
+                    //store the team key & random order
+                    SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+                    SharedPreferences.Editor edit = pref.edit();
+
+                    edit.putInt("total_quests", n);
+
+                    for(int i = 0;i < n;i++){
+                        edit.putInt("order" + i, random.get(i));
+                        Log.d("tag_order", Integer.toString(random.get(i)));
+                    }
+
+                    edit.putString("team_key", key)
+                            .putBoolean("has_team", true)
+                            .apply();
+
+                    //start map activity
+                    Intent myIntent = new Intent(context, MapsActivity.class);
+                    startActivity(myIntent);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
+
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
         }
     }
 

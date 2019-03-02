@@ -12,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, PopDialog.MyDialogFragmentListener {
@@ -53,6 +55,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private double latitude, longitude;
     private boolean get_team_key = false;
     private String team_key;
+    private List<Integer> order = new ArrayList<>();
+    private int total_quests;
 
 
 
@@ -77,9 +81,16 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         //initialize team & quest data
         //if haven't get the key (map activity just launched)
         if(!get_team_key){
-            //get team key from shared preferences
-            team_key = getSharedPreferences("data", MODE_PRIVATE)
-                    .getString("team_key", "");
+            //get team key & order from shared preferences
+            SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+
+            team_key = pref.getString("team_key", "");
+
+            total_quests = pref.getInt("total_quests", 0);
+
+            for(int i = 0;i < total_quests;i++)
+                order.add(pref.getInt("order" + i, 0));
+
             get_team_key = true;
             Log.d("tag_team_key", team_key);
 
@@ -153,23 +164,37 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         float[] result = new float[1];
         Location.distanceBetween(latitude, longitude,
-                quests.get(team.quest_number).latitude, quests.get(team.quest_number).longitude,
+                quests.get(team.current_quest).latitude, quests.get(team.current_quest).longitude,
                 result);
 
         Log.d("tag_distance_check", String.valueOf(latitude));
         Log.d("tag_distance_check", String.valueOf(longitude));
-        Log.d("tag_distance_check", String.valueOf(quests.get(team.quest_number).latitude));
-        Log.d("tag_distance_check", String.valueOf(quests.get(team.quest_number).longitude));
+        Log.d("tag_distance_check", String.valueOf(quests.get(team.current_quest).latitude));
+        Log.d("tag_distance_check", String.valueOf(quests.get(team.current_quest).longitude));
         Log.d("tag_distance_check", String.valueOf(result[0]));
 
         //if close enough, pop out quest window
 
-        if(result[0] <= 10) {
+        if(result[0] <= 10 && quests.get(team.current_quest).question.equals("none")){
+            //走到就過關
+            Toast toast = Toast.makeText(this, "你過關了！", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 400);
+            toast.show();
+            //update local team info
+            team.quest_number++;
+            team.current_quest = order.get(team.quest_number);
+
+            //update db team info
+            DatabaseReference myRef = db.getReference();
+            myRef.child("teams").child(team_key).child("quest_number").setValue(team.quest_number);
+            myRef.child("teams").child(team_key).child("current_quest").setValue(team.current_quest);
+        }
+        else if(result[0] <= 10) {
 
             Log.d("tag_dialog", "pop dialog");
 
             Bundle args = new Bundle();
-            args.putString("question", quests.get(team.quest_number).question);
+            args.putString("question", quests.get(team.current_quest).question);
 
             DialogFragment dialog = new PopDialog();
             dialog.setArguments(args);
@@ -181,7 +206,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 400);
             toast.show();
         }
-
 
     }
 
@@ -209,15 +233,28 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         }
     }
 
+    public void hint(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(quests.get(team.current_quest).hint)
+                .setTitle("提示");
+        builder.setPositiveButton("好", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    //answer button pressed
     @Override
     public void onReturnValue(String foo) {
 
         Log.d("tag_return", foo);
-        Log.d("tag_correct", quests.get(team.quest_number).answer);
+        Log.d("tag_correct", quests.get(team.current_quest).answer);
 
         //if the answer is correct, update team info
 
-        if(foo.equals(quests.get(team.quest_number).answer)){
+        if(foo.equals(quests.get(team.current_quest).answer)){
 
             Log.d("tag_answer_check", "The answer is correct!");
             Toast toast = Toast.makeText(this, "你答對了！", Toast.LENGTH_SHORT);
@@ -229,6 +266,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             //update db team info
             DatabaseReference myRef = db.getReference();
             myRef.child("teams").child(team_key).child("quest_number").setValue(team.quest_number);
+            myRef.child("teams").child(team_key).child("current_quest").setValue(team.current_quest);
         }
         else{
             Toast toast = Toast.makeText(this, "答錯囉", Toast.LENGTH_SHORT);
@@ -245,6 +283,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             Intent myIntent = new Intent(this, CompleteActivity.class);
             startActivity(myIntent);
         }
+        else
+            team.current_quest = order.get(team.quest_number);
 
     }
 

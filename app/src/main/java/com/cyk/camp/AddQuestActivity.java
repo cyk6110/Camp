@@ -6,12 +6,12 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -20,13 +20,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,10 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 
-public class AdminActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
+public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
 
 
     private FirebaseDatabase db;
@@ -47,7 +43,7 @@ public class AdminActivity extends FragmentActivity implements GoogleMap.OnMyLoc
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private double latitude, longitude;
-    private String q = "", a = "";
+    private String q = "", a = "", h = "";
     private Marker marker;
     private NumberFormat formatter = new DecimalFormat("#0.00");
 
@@ -88,7 +84,7 @@ public class AdminActivity extends FragmentActivity implements GoogleMap.OnMyLoc
                         .position(clickCoords));
                 latitude = clickCoords.latitude;
                 longitude = clickCoords.longitude;
-                Toast toast = Toast.makeText(AdminActivity.this, formatter.format(latitude) + ", " + formatter.format(longitude), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(AddQuestActivity.this, formatter.format(latitude) + ", " + formatter.format(longitude), Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.TOP|Gravity.CENTER, 0, 50);
                 toast.show();
             }
@@ -103,20 +99,38 @@ public class AdminActivity extends FragmentActivity implements GoogleMap.OnMyLoc
         final DatabaseReference myRef = db.getReference("quests");
         final EditText et_q = findViewById(R.id.et_question);
         final EditText et_a = findViewById(R.id.et_answer);
+        final EditText et_h = findViewById(R.id.et_hint);
+        final Switch switch_empty = findViewById(R.id.switch_empty);
 
 
-        if(et_a.getText().toString().matches("") || et_q.getText().toString().matches("")) {
-            //Toast.makeText(AdminActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
+        if(switch_empty.isChecked() && !et_h.getText().toString().matches("")){
+            //no question & answer
 
+            q = "none";
+            a = "none";
+            h = et_h.getText().toString();
+
+            et_a.getText().clear();
+            et_q.getText().clear();
+            et_h.getText().clear();
+
+            key = myRef.push().getKey();
+        }
+        else if(et_a.getText().toString().matches("") || et_q.getText().toString().matches("") ||
+                et_h.getText().toString().matches("")) {
+            //empty
+            Toast.makeText(AddQuestActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
         }
         else {
             Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
 
             q = et_q.getText().toString();
             a = et_a.getText().toString();
+            h = et_h.getText().toString();
 
             et_a.getText().clear();
             et_q.getText().clear();
+            et_h.getText().clear();
 
             key = myRef.push().getKey();
         }
@@ -128,7 +142,7 @@ public class AdminActivity extends FragmentActivity implements GoogleMap.OnMyLoc
                 n = (int)snapshot.getChildrenCount();
                 Log.d("tag_children_count", String.valueOf(n));
 
-                Quest quest = new Quest(n, q, a, latitude, longitude);
+                Quest quest = new Quest(n, q, a, latitude, longitude, h);
                 myRef.child(key).setValue(quest);
             }
             @Override
@@ -158,7 +172,7 @@ public class AdminActivity extends FragmentActivity implements GoogleMap.OnMyLoc
                                         .position(new LatLng(latitude, longitude)));
 
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18), 1000, null);
-                                Toast toast = Toast.makeText(AdminActivity.this, formatter.format(latitude) + ", " + formatter.format(longitude), Toast.LENGTH_LONG);
+                                Toast toast = Toast.makeText(AddQuestActivity.this, formatter.format(latitude) + ", " + formatter.format(longitude), Toast.LENGTH_LONG);
                                 toast.setGravity(Gravity.TOP|Gravity.CENTER, 0, 50);
                                 toast.show();
                             }

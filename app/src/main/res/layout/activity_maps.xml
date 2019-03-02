@@ -14,6 +14,13 @@
         tools:context=".MapsActivity" />
 
     <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:text="提示"
+        android:onClick="hint"/>
+
+    <Button
         android:id="@+id/btn_scan"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="150dp"
