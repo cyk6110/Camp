@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CompleteActivity">
+    tools:context=".EndPlayerActivity">
     <TextView
+        android:id="@+id/tv_end_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="你完成了所有關卡！"
+        android:text="遊戲已結束"
         android:textSize="15pt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

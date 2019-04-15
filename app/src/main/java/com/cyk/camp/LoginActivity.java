@@ -33,32 +33,14 @@ public class LoginActivity extends AppCompatActivity {
     private int n = 0;
     private Team t;
     private Context context;
+    private int status = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         db = FirebaseDatabase.getInstance();
-
         context = this;
-
-        //completed
-        if(getSharedPreferences("data", MODE_PRIVATE)
-                .getBoolean("complete", false)){
-            Intent myIntent = new Intent(this, CompleteActivity.class);
-            startActivity(myIntent);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            finish();
-        }
-        //already joined
-        else if(getSharedPreferences("data", MODE_PRIVATE)
-                .getBoolean("has_team", false)){
-            //start map activity
-            Intent myIntent = new Intent(this, MapsActivity.class);
-            startActivity(myIntent);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            finish();
-        }
+        final DatabaseReference myRef = db.getReference().child("status");
 
         //check permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -74,78 +56,165 @@ public class LoginActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
+
+
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                status = snapshot.getValue(Integer.class);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        //completed
+        if(getSharedPreferences("data", MODE_PRIVATE)
+                .getBoolean("end", false))
+            playerLoggedIn(true);
+            //already joined
+        else if(getSharedPreferences("data", MODE_PRIVATE)
+                .getBoolean("has_team", false)) {
+            playerLoggedIn(false);
+            Log.d("tag_debug", "has team");
+        }
+
+        setContentView(R.layout.activity_login);
     }
 
     public void newTeam(View view){
         EditText et = findViewById(R.id.et_team_name);
-        String s = et.getText().toString();
+        final String s = et.getText().toString();
         Log.d("tag_s", s);
         if(s.length() == 0){
             Toast.makeText(this, "請填入隊名", Toast.LENGTH_SHORT).show();
         }
         else if(s.equals("admin")){
-            Intent myIntent = new Intent(this, AddQuestActivity.class);
-            startActivity(myIntent);
+            Intent myIntent;
+
+            //if status = 1
+            if(status == 1){
+                myIntent = new Intent(this, SettingActivity.class);
+                startActivity(myIntent);
+            }
+            //if status = 2
+            //waiting
+            else if(status == 2) {
+                myIntent = new Intent(this, WaitAdminActivity.class);
+                startActivity(myIntent);
+            }
+            //if status = 3
+            //game monitor
+            else if(status == 3) {
+                myIntent = new Intent(this, MonitorActivity.class);
+                startActivity(myIntent);
+            }
+            else if(status == 4) {
+                myIntent = new Intent(this, EndAdminActivity.class);
+                startActivity(myIntent);
+            }
+
             //myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             //finish();
-            Log.d("tag_admin", "admin mode");
+
         }
-        else {
+        else { //new player
+            //if status = 1
+            //can't join
 
-            t = new Team(s);
-            final DatabaseReference myRef = db.getReference();
-            final String key = myRef.child("teams").push().getKey();
+            //if status = 2
+            if(status == 2) {
+                t = new Team(s);
+                final DatabaseReference myRef = db.getReference();
+                final String key = myRef.child("teams").push().getKey();
 
+                Query q = myRef.child("quests");
+                //get total number of quests
+                q.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        n = (int) snapshot.getChildrenCount();
+                        Log.d("tag_children_count", String.valueOf(n));
 
-            Query q = myRef.child("quests");
-            //get total number of quests
-            q.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    n = (int)snapshot.getChildrenCount();
-                    Log.d("tag_children_count", String.valueOf(n));
+                        //random shuffle
+                        List<Integer> random = new ArrayList<>();
 
-                    //random shuffle
-                    List<Integer> random = new ArrayList<>();
+                        for (int i = 0; i < n; i++)
+                            random.add(i);
 
-                    for(int i = 0; i < n; i++)
-                        random.add(i);
+                        Collections.shuffle(random);
 
+                        t.current_quest = random.get(0);
 
-                    Collections.shuffle(random);
+                        //push team info to db
+                        if (key != null) myRef.child("teams").child(key).setValue(t);
 
-                    t.current_quest = random.get(0);
+                        //store the team key & random order
+                        SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+                        SharedPreferences.Editor edit = pref.edit();
 
-                    //push team info to db
-                    if(key != null) myRef.child("teams").child(key).setValue(t);
+                        edit.putInt("total_quests", n);
 
+                        for (int i = 0; i < n; i++) {
+                            edit.putInt("order" + i, random.get(i));
+                            Log.d("tag_order", Integer.toString(random.get(i)));
+                        }
 
-                    //store the team key & random order
-                    SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-                    SharedPreferences.Editor edit = pref.edit();
+                        edit.putString("team_key", key)
+                                .putString("team_name", s)
+                                .putBoolean("has_team", true)
+                                .apply();
 
-                    edit.putInt("total_quests", n);
+                        //start map activity
+                        Intent myIntent = new Intent(context, WaitPlayerActivity.class);
+                        startActivity(myIntent);
+                        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        finish();
 
-                    for(int i = 0;i < n;i++){
-                        edit.putInt("order" + i, random.get(i));
-                        Log.d("tag_order", Integer.toString(random.get(i)));
                     }
 
-                    edit.putString("team_key", key)
-                            .putBoolean("has_team", true)
-                            .apply();
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
 
-                    //start map activity
-                    Intent myIntent = new Intent(context, MapsActivity.class);
-                    startActivity(myIntent);
-                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    finish();
+            //if status = 3
+            //can't join
+        }
+    }
+    public void playerLoggedIn(boolean completed){
 
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
+
+        Intent myIntent;
+
+        //completed
+        if(completed){
+            myIntent = new Intent(this, EndPlayerActivity.class);
+            startActivity(myIntent);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
+        }
+        //already joined
+        else {
+
+            //if status = 2
+            //wait
+            if(status == 2) {
+                myIntent = new Intent(this, WaitPlayerActivity.class);
+                startActivity(myIntent);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                finish();
+            }
+            //if status = 3
+            //start map activity
+            else if(status == 3) {
+                myIntent = new Intent(this, MapsActivity.class);
+                startActivity(myIntent);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                finish();
+            }
 
         }
     }

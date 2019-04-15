@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -47,10 +48,16 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
     private Marker marker;
     private NumberFormat formatter = new DecimalFormat("#0.00");
 
+    private DatabaseReference myRef;
+    private EditText et_q;
+    private EditText et_a;
+    private EditText et_h;
+    private Switch switch_empty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
+        setContentView(R.layout.activity_add_quest);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -59,6 +66,27 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
 
         db = FirebaseDatabase.getInstance();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        myRef = db.getReference("quests");
+        et_q = findViewById(R.id.et_question);
+        et_a = findViewById(R.id.et_answer);
+        et_h = findViewById(R.id.et_hint);
+        switch_empty = findViewById(R.id.switch_empty);
+
+        switch_empty.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    et_q.setVisibility(View.GONE);
+                    et_a.setVisibility(View.GONE);
+                }
+                else {
+                    et_q.setVisibility(View.VISIBLE);
+                    et_a.setVisibility(View.VISIBLE);
+                }
+            }
+
+        });
 
     }
     @Override
@@ -96,15 +124,9 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
     }
     public void newQuest(View view){
 
-        final DatabaseReference myRef = db.getReference("quests");
-        final EditText et_q = findViewById(R.id.et_question);
-        final EditText et_a = findViewById(R.id.et_answer);
-        final EditText et_h = findViewById(R.id.et_hint);
-        final Switch switch_empty = findViewById(R.id.switch_empty);
-
-
         if(switch_empty.isChecked() && !et_h.getText().toString().matches("")){
             //no question & answer
+            Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
 
             q = "none";
             a = "none";
@@ -150,8 +172,8 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
             }
         });
 
-
     }
+
     public void getLocation(View view){
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)

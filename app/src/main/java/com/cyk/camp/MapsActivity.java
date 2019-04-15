@@ -1,13 +1,13 @@
 package com.cyk.camp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -25,12 +24,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,13 +46,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private FirebaseDatabase db;
     private FusedLocationProviderClient fusedLocationClient;
     private Team team = new Team();
-    private ArrayList<Quest> quests = new ArrayList();
+    private ArrayList<Quest> quests = new ArrayList<>();
 
     private double latitude, longitude;
     private boolean get_team_key = false;
     private String team_key;
     private List<Integer> order = new ArrayList<>();
     private int total_quests;
+    private int status;
+    private Context context = this;
 
 
 
@@ -77,6 +75,26 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         DatabaseReference myRef = db.getReference();
+
+        myRef.child("status").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                status = snapshot.getValue(Integer.class);
+                if(status == 4){
+                    //end of the game
+                    SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+                    pref.edit().putBoolean("end", true).apply();
+
+                    Intent myIntent = new Intent(context, EndPlayerActivity.class);
+                    startActivity(myIntent);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         //initialize team & quest data
         //if haven't get the key (map activity just launched)
@@ -263,10 +281,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             //update local team info
             team.quest_number++;
 
+            //team.current_quest = order.get(team.quest_number);
+
             //update db team info
             DatabaseReference myRef = db.getReference();
             myRef.child("teams").child(team_key).child("quest_number").setValue(team.quest_number);
-            myRef.child("teams").child(team_key).child("current_quest").setValue(team.current_quest);
+            //myRef.child("teams").child(team_key).child("current_quest").setValue(team.current_quest);
         }
         else{
             Toast toast = Toast.makeText(this, "答錯囉", Toast.LENGTH_SHORT);
@@ -278,13 +298,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         //complete all quests
         if(team.quest_number >= quests.size()){
             SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-            pref.edit().putBoolean("complete", true).apply();
+            pref.edit()
+                    .putBoolean("end", true)
+                    .putBoolean("complete", true)
+                    .apply();
 
-            Intent myIntent = new Intent(this, CompleteActivity.class);
+            Intent myIntent = new Intent(this, EndPlayerActivity.class);
             startActivity(myIntent);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
         }
-        else
+        else {
             team.current_quest = order.get(team.quest_number);
+            DatabaseReference myRef = db.getReference();
+            myRef.child("teams").child(team_key).child("current_quest").setValue(team.current_quest);
+        }
 
     }
 
