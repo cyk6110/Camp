@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".WaitPlayerActivity">
 
     <TextView
@@ -12,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="16pt"
+        android:textColor="#EEE"
+        android:textSize="24sp"
         android:text="team" />
 
     <TextView
@@ -20,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_team_name"
         android:layout_centerHorizontal="true"
-        android:textSize="10pt"
+        android:textColor="#EEE"
+        android:textSize="20sp"
         android:text="等待遊戲開始..." />
 
 </RelativeLayout>

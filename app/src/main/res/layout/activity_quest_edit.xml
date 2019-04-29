@@ -5,41 +5,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".QuestEditActivity"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/background">
 
 
 
     <Button
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:id="@+id/btn_add_new_quest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:text="新增題目"
         android:onClick="newQuest"/>
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:id="@+id/btn_delete_quest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@id/btn_add_new_quest"
+        android:layout_toEndOf="@id/btn_add_new_quest"
+        android:text="清空題目"
+        android:onClick="deleteQuest"/>
 
     <ListView
         android:id="@+id/listview_quest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        android:layout_below="@+id/btn_add_new_quest"></ListView>
+        android:layout_margin="10dp"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:layout_below="@+id/btn_add_new_quest"
+        android:layout_above="@id/btn_quest_previous">
+    </ListView>
 
     <Button
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/btn_quest_previous"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/btn_quest_next"
+        android:layout_toStartOf="@id/btn_quest_next"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="15dp"
         android:text="上一步"
         android:onClick="last"/>
     <Button
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/btn_quest_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="15dp"
         android:layout_marginEnd="15dp"

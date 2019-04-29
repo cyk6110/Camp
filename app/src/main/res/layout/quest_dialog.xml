@@ -15,7 +15,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="20dp"
         android:text="題目"
-        android:textSize="12pt" />
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/et_quest_dialog_answer"
@@ -23,6 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="你的答案"
-        android:padding="10dp" />
+        android:padding="20dp" />
 
 </LinearLayout>

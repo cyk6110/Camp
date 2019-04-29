@@ -29,6 +29,7 @@ public class EndAdminActivity extends AppCompatActivity {
         startActivity(myIntent);
         myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();
+        return;
     }
     public void resetTeam(View view){
         db = FirebaseDatabase.getInstance();
@@ -40,5 +41,6 @@ public class EndAdminActivity extends AppCompatActivity {
         startActivity(myIntent);
         myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();
+        return;
     }
 }

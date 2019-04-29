@@ -128,8 +128,8 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
             //no question & answer
             Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
 
-            q = "none";
-            a = "none";
+            q = "走到就過關";
+            a = "走到就過關";
             h = et_h.getText().toString();
 
             et_a.getText().clear();
@@ -138,6 +138,8 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
 
             key = myRef.push().getKey();
         }
+        else if(switch_empty.isChecked() && et_h.getText().toString().matches(""))
+            Toast.makeText(AddQuestActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
         else if(et_a.getText().toString().matches("") || et_q.getText().toString().matches("") ||
                 et_h.getText().toString().matches("")) {
             //empty

@@ -32,26 +32,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/et_question"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:hint="問題"
-            android:inputType="text" />
 
-        <EditText
-            android:id="@+id/et_answer"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:hint="答案"
-            android:inputType="text" />
+            <EditText
+                android:id="@+id/et_question"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                style="@style/EditText"
+                android:hint="問題"
+                android:inputType="text" />
 
-        <EditText
-            android:id="@+id/et_hint"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:hint="提示"
-            android:inputType="text" />
+
+            <EditText
+                android:id="@+id/et_answer"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                style="@style/EditText"
+                android:hint="答案"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/et_hint"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                style="@style/EditText"
+                android:hint="提示"
+                android:inputType="text" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="走到就過關"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
             <Switch
                 android:id="@+id/switch_empty"
                 android:layout_width="wrap_content"

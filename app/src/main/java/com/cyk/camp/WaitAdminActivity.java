@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,13 +36,15 @@ public class WaitAdminActivity extends AppCompatActivity {
                 Team t = teamSnapshot.getValue(Team.class);
                 str[cnt] = t.name;
                 cnt++;
-
                 //Log.d("tag_get_answer", q.answer);
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, str);
+
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout., str);
 
             ListView listView = (ListView) findViewById(R.id.listview_team);
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            WaitAdminAdapter adapter = new WaitAdminAdapter(str, inflater);
             listView.setAdapter(adapter);
         }
         @Override
@@ -70,6 +74,7 @@ public class WaitAdminActivity extends AppCompatActivity {
         startActivity(myIntent);
         myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();
+        return;
     }
 
     //加listener 持續更新team加入狀況

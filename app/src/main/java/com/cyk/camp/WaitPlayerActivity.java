@@ -29,6 +29,7 @@ public class WaitPlayerActivity extends AppCompatActivity {
                 startActivity(myIntent);
                 myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 finish();
+                return;
             }
         }
         @Override

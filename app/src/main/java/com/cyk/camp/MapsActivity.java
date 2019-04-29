@@ -89,6 +89,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     startActivity(myIntent);
                     myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
+                    return;
                 }
             }
             @Override
@@ -193,7 +194,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         //if close enough, pop out quest window
 
-        if(result[0] <= 10 && quests.get(team.current_quest).question.equals("none")){
+        if(result[0] <= 10 && quests.get(team.current_quest).question.equals("走到就過關")){
             //走到就過關
             Toast toast = Toast.makeText(this, "你過關了！", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 400);
@@ -307,6 +308,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             startActivity(myIntent);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             finish();
+            return;
         }
         else {
             team.current_quest = order.get(team.quest_number);
