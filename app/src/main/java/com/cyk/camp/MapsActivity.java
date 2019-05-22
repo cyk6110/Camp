@@ -56,7 +56,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private int status;
     private Context context = this;
 
+    /*
+    timer:
 
+    每個team各自有一個timer
+    判斷完成所有關卡時 更新db中team的time
+    傳時間給EndPlayerActivity
+    monitor判斷time!=-1 並調整顯示訊息
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +76,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mapFragment.getMapAsync(this);
 
         db = FirebaseDatabase.getInstance();
-
-
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -87,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                     Intent myIntent = new Intent(context, EndPlayerActivity.class);
                     startActivity(myIntent);
-                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     finish();
                     return;
                 }
@@ -306,7 +311,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             Intent myIntent = new Intent(this, EndPlayerActivity.class);
             startActivity(myIntent);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             finish();
             return;
         }

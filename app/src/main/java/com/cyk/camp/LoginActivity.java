@@ -210,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
                             //start map activity
                             Intent myIntent = new Intent(context, WaitPlayerActivity.class);
                             startActivity(myIntent);
-                            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             finish();
                             return;
 
@@ -237,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
         if(completed){
             myIntent = new Intent(this, EndPlayerActivity.class);
             startActivity(myIntent);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             finish();
             return;
         }
@@ -249,7 +249,7 @@ public class LoginActivity extends AppCompatActivity {
             if(status == 2) {
                 myIntent = new Intent(this, WaitPlayerActivity.class);
                 startActivity(myIntent);
-                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
                 return;
             }
@@ -258,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
             else if(status == 3) {
                 myIntent = new Intent(this, MapsActivity.class);
                 startActivity(myIntent);
-                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
                 return;
             }

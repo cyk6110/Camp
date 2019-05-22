@@ -2,12 +2,14 @@ package com.cyk.camp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +21,8 @@ public class MonitorActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
     private Context context = this;
+    TextView tv_time;
+    long startTime = 0, millis = 0;
     private ValueEventListener newTeamListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -46,6 +50,22 @@ public class MonitorActivity extends AppCompatActivity {
         public void onCancelled(DatabaseError databaseError) {
         }
     };
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            millis = System.currentTimeMillis() - startTime;
+            int seconds = (int) (millis / 1000);
+            int minutes = (seconds / 60) % 60;
+            int hour = seconds / 3600;
+            seconds = seconds % 60;
+
+            tv_time.setText(String.format("%d:%02d:%02d", hour, minutes, seconds));
+
+            timerHandler.postDelayed(this, 500);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +76,10 @@ public class MonitorActivity extends AppCompatActivity {
         DatabaseReference myRef = db.getReference();
 
         myRef.child("teams").addValueEventListener(newTeamListener);
+
+        tv_time = findViewById(R.id.tv_timer);
+        startTime = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
     }
 
     public void endGame(View view){
@@ -65,7 +89,7 @@ public class MonitorActivity extends AppCompatActivity {
 
         Intent myIntent = new Intent(this, EndAdminActivity.class);
         startActivity(myIntent);
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
         return;
     }

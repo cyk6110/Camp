@@ -5,6 +5,7 @@ public class Team {
     public String name;
     public int quest_number; //number of quests completed
     public int current_quest; //current quest number
+    //public long time;
 
     public Team(){}
 
@@ -12,5 +13,6 @@ public class Team {
         this.name = s;
         this.quest_number = 0;
         this.current_quest = -1;
+        //this.time = 0;
     }
 }

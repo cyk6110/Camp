@@ -16,45 +16,53 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp">
 
-            <EditText
-                android:id="@+id/et_setting_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                style="@style/EditText"
-                android:hint="遊戲名稱"
-                android:inputType="text" />
+        <EditText
+            android:id="@+id/et_setting_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            style="@style/EditText"
+            android:hint="遊戲名稱"
+            android:inputType="text" />
 
 
-            <EditText
-                android:id="@+id/et_setting_radius"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/et_setting_name"
-                style="@style/EditText"
-                android:layout_margin="5dp"
-                android:hint="關卡範圍半徑(預設為10公尺)"
-                android:inputType="number"/>
+        <EditText
+            android:id="@+id/et_setting_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/et_setting_name"
+            style="@style/EditText"
+            android:layout_margin="5dp"
+            android:hint="關卡範圍半徑(預設為10公尺)"
+            android:inputType="number"/>
 
-            <EditText
-                android:id="@+id/et_setting_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/et_setting_radius"
-                style="@style/EditText"
-                android:layout_margin="5dp"
-                android:hint="描述"
-                android:inputType="text"/>
+        <EditText
+            android:id="@+id/et_setting_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/et_setting_radius"
+            style="@style/EditText"
+            android:layout_margin="5dp"
+            android:hint="描述"
+            android:inputType="text"/>
 
 
-            <EditText
-                android:id="@+id/et_setting_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/et_setting_text"
-                style="@style/EditText"
-                android:layout_margin="5dp"
-                android:hint="遊戲密碼" />
+        <EditText
+            android:id="@+id/et_setting_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/et_setting_text"
+            style="@style/EditText"
+            android:layout_margin="5dp"
+            android:hint="遊戲密碼" />
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:id="@+id/btn_setting_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/et_setting_password"
+            android:text="上傳"/>
 
 
         <TextView
@@ -62,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_below="@id/et_setting_password"
+            android:layout_below="@id/btn_setting_upload"
             android:text="主畫面圖片"
             android:textSize="20sp"/>
 

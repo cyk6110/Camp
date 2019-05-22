@@ -177,7 +177,6 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
     }
 
     public void getLocation(View view){
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.getLastLocation()

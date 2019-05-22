@@ -27,7 +27,7 @@ public class EndAdminActivity extends AppCompatActivity {
 
         Intent myIntent = new Intent(this, LoginActivity.class);
         startActivity(myIntent);
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
         return;
     }
@@ -39,7 +39,7 @@ public class EndAdminActivity extends AppCompatActivity {
 
         Intent myIntent = new Intent(this, WaitAdminActivity.class);
         startActivity(myIntent);
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
         return;
     }

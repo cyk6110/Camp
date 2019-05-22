@@ -7,9 +7,19 @@
     android:background="@drawable/background"
     tools:context=".MonitorActivity">
 
+    <TextView
+        android:id="@+id/tv_timer"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:text="時間" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/tv_timer"
         android:layout_above="@id/btn_end_game">
 
         <ListView

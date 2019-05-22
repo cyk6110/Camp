@@ -27,7 +27,7 @@ public class WaitPlayerActivity extends AppCompatActivity {
                 //跳轉到遊戲畫面
                 Intent myIntent = new Intent(context, MapsActivity.class);
                 startActivity(myIntent);
-                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 finish();
                 return;
             }
