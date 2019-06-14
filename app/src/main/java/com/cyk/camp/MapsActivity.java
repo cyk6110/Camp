@@ -358,7 +358,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     pref.edit()
                             .putBoolean("end", true)
                             .putLong("time_spent", complete_time - start_time)
-                            .putInt("rank", n+1)
+                            .putInt("rank", n)
                             .apply();
 
                     Intent myIntent = new Intent(context, EndPlayerActivity.class);
