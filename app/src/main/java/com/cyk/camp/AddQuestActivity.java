@@ -1,7 +1,10 @@
 package com.cyk.camp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -9,9 +12,13 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -53,6 +60,8 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
     private EditText et_a;
     private EditText et_h;
     private Switch switch_empty;
+
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +109,17 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         }
-        mMap.setOnMyLocationButtonClickListener(this);
+
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        //mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng clickCoords) {
                 if(marker != null) marker.remove();
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(clickCoords, 18), 800, null);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(clickCoords, 22), 800, null);
                 marker = mMap.addMarker(new MarkerOptions()
                         .position(clickCoords));
                 latitude = clickCoords.latitude;
@@ -157,23 +169,21 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
             et_h.getText().clear();
 
             key = myRef.push().getKey();
+
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    n = (int)snapshot.getChildrenCount();
+                    Log.d("tag_children_count", String.valueOf(n));
+
+                    Quest quest = new Quest(n, q, a, latitude, longitude, h);
+                    myRef.child(key).setValue(quest);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
-
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                n = (int)snapshot.getChildrenCount();
-                Log.d("tag_children_count", String.valueOf(n));
-
-                Quest quest = new Quest(n, q, a, latitude, longitude, h);
-                myRef.child(key).setValue(quest);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
     }
 
     public void getLocation(View view){
@@ -194,7 +204,7 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                                 marker = mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(latitude, longitude)));
 
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18), 1000, null);
+                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 22), 1000, null);
                                 Toast toast = Toast.makeText(AddQuestActivity.this, formatter.format(latitude) + ", " + formatter.format(longitude), Toast.LENGTH_LONG);
                                 toast.setGravity(Gravity.TOP|Gravity.CENTER, 0, 50);
                                 toast.show();
@@ -205,6 +215,21 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
     }
     public void back(View view){
         finish();
+    }
+
+    public void help(View view){
+        Log.d("tag_help", "pressed");
+        View v = LayoutInflater.from(context).inflate(R.layout.popupwindow_add_quest_help, null, false);
+        PopupWindow pop = new PopupWindow(v);
+
+        pop.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        pop.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        //pop.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        pop.setBackgroundDrawable(new BitmapDrawable());
+        pop.setOutsideTouchable(true);
+
+        pop.showAsDropDown(view);
+
     }
 
     @Override

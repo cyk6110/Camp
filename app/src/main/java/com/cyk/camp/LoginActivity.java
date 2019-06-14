@@ -36,16 +36,17 @@ public class LoginActivity extends AppCompatActivity {
     private int n = 0;
     private Team t;
     private Context context;
-    private int status = 0;
-    private String correct_game_name;
-    private String correct_pw;
+    private Integer status = 0;
+    private String correct_game_name = "x";
+    private String correct_pw = "x";
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseDatabase.getInstance();
         context = this;
-        final DatabaseReference myRef = db.getReference();
+        myRef = db.getReference();
 
         //check permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -64,51 +65,60 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        myRef.child("status").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                status = snapshot.getValue(Integer.class);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
 
-        myRef.child("name").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                correct_game_name = dataSnapshot.getValue(String.class);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        myRef.child("password").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                correct_pw = dataSnapshot.getValue(String.class);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
-        //completed
+        //遊戲已結束
         if(getSharedPreferences("data", MODE_PRIVATE)
                 .getBoolean("end", false))
             playerLoggedIn(true);
-            //already joined
+        //已經登入但還沒結束
         else if(getSharedPreferences("data", MODE_PRIVATE)
                 .getBoolean("has_team", false)) {
             playerLoggedIn(false);
             Log.d("tag_debug", "has team");
         }
+        //還沒登入
+        else {
+            myRef.child("status").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    status = snapshot.getValue(Integer.class);
+                    //Log.d("tag_admin", Integer.toString(status));
+                }
 
-        setContentView(R.layout.activity_login);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
-        EditText et_password = findViewById(R.id.et_login_password);
-        et_password.setTransformationMethod(new PasswordTransformationMethod());
-        et_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            myRef.child("name").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    correct_game_name = dataSnapshot.getValue(String.class);
+                    //Log.d("tag_game", correct_game_name);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            myRef.child("password").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    correct_pw = dataSnapshot.getValue(String.class);
+                    //Log.d("tag_game", correct_pw);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+
+            setContentView(R.layout.activity_login);
+
+            EditText et_password = findViewById(R.id.et_login_password);
+            et_password.setTransformationMethod(new PasswordTransformationMethod());
+            et_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
     }
 
     public void newTeam(View view){
@@ -127,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "請輸入密碼", Toast.LENGTH_SHORT).show();
         }
         else if(s.equals("admin")){
+            Log.d("tag_admin", Integer.toString(status));
             if(game_name.equals("admin") && pw.equals("admin")) {
                 Intent myIntent;
 

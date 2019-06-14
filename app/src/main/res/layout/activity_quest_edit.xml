@@ -37,7 +37,7 @@
         android:layout_margin="10dp"
         android:divider="@null"
         android:dividerHeight="0dp"
-        android:layout_below="@+id/btn_add_new_quest"
+        android:layout_below="@id/btn_add_new_quest"
         android:layout_above="@id/btn_quest_previous">
     </ListView>
 

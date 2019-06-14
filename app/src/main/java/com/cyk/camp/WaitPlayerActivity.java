@@ -52,6 +52,29 @@ public class WaitPlayerActivity extends AppCompatActivity {
 
         //加listener監聽狀態
         myRef.child("status").addValueEventListener(statusListener);
+
+        //撈遊戲名稱&敘述來給玩家看
+        myRef.child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String name = snapshot.getValue(String.class);
+                ((TextView)findViewById(R.id.game_name)).setText(name);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        myRef.child("description").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String description = snapshot.getValue(String.class);
+                ((TextView)findViewById(R.id.game_description)).setText(description);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
     }
 
 

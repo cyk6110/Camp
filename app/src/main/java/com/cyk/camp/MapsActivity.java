@@ -55,14 +55,30 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private int total_quests;
     private int status;
     private Context context = this;
+    private long complete_time, start_time = -1;
 
     /*
-    timer:
+    排名＆計時:
 
-    每個team各自有一個timer
-    判斷完成所有關卡時 更新db中team的time
-    傳時間給EndPlayerActivity
-    monitor判斷time!=-1 並調整顯示訊息
+    db:
+    start_time
+    teams_complete 存完成的隊伍的完成時間(撈下來再排序
+
+    admin monitor:
+    開始時把start_time存到db & shared preference
+    ***改到wait admin?
+
+    admin end:
+    撈db
+
+    player:V
+    完成時
+    1. shared preference存名次＆所花時間
+    2. 把隊伍資料push上去
+
+    player end:V
+    shared preference complete time & rank
+
     */
 
     @Override
@@ -81,6 +97,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         DatabaseReference myRef = db.getReference();
 
+        start_time = getSharedPreferences("data", MODE_PRIVATE)
+                .getLong("start_time", -1);
+
         myRef.child("status").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -96,6 +115,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     finish();
                     return;
                 }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        myRef.child("start_time").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                start_time = snapshot.getValue(long.class);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -199,7 +227,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         //if close enough, pop out quest window
 
-        if(result[0] <= 10 && quests.get(team.current_quest).question.equals("走到就過關")){
+        if(result[0] <= 15 && quests.get(team.current_quest).question.equals("走到就過關")){
             //走到就過關
             Toast toast = Toast.makeText(this, "你過關了！", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 400);
@@ -213,7 +241,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             myRef.child("teams").child(team_key).child("quest_number").setValue(team.quest_number);
             myRef.child("teams").child(team_key).child("current_quest").setValue(team.current_quest);
         }
-        else if(result[0] <= 10) {
+        else if(result[0] <= 15) {
 
             Log.d("tag_dialog", "pop dialog");
 
@@ -277,9 +305,16 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Log.d("tag_correct", quests.get(team.current_quest).answer);
 
         //if the answer is correct, update team info
-
-        if(foo.equals(quests.get(team.current_quest).answer)){
-
+        //切關鍵字&檢查
+        String[] keywords = quests.get(team.current_quest).answer.split(" ");
+        boolean match = false;
+        for(String s:keywords){
+            if(foo.equals(s)){
+                match = true;
+                break;
+            }
+        }
+        if(match){
             Log.d("tag_answer_check", "The answer is correct!");
             Toast toast = Toast.makeText(this, "你答對了！", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 400);
@@ -303,17 +338,45 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         //complete all quests
         if(team.quest_number >= quests.size()){
-            SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-            pref.edit()
-                    .putBoolean("end", true)
-                    .putBoolean("complete", true)
-                    .apply();
 
-            Intent myIntent = new Intent(this, EndPlayerActivity.class);
-            startActivity(myIntent);
-            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            finish();
-            return;
+            complete_time = System.currentTimeMillis();
+
+            DatabaseReference myRef = db.getReference();
+
+            String key = getSharedPreferences("data", MODE_PRIVATE).getString("team_key", "");
+            String name = getSharedPreferences("data", MODE_PRIVATE).getString("team_name", "");
+            Rank rank = new Rank(name, complete_time - start_time);
+            myRef.child("teams_complete").child(key).setValue(rank);
+
+            //shared reference存名次和所花時間
+            myRef.child("teams_complete").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    int n = (int)snapshot.getChildrenCount();
+                    Log.d("teams_complete", String.valueOf(n));
+                    SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+                    pref.edit()
+                            .putBoolean("end", true)
+                            .putLong("time_spent", complete_time - start_time)
+                            .putInt("rank", n+1)
+                            .apply();
+
+                    Intent myIntent = new Intent(context, EndPlayerActivity.class);
+                    startActivity(myIntent);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    finish();
+                    return;
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+            //把所花時間push到db的teams_complete(隊名當index)
+
+
+
+
         }
         else {
             team.current_quest = order.get(team.quest_number);

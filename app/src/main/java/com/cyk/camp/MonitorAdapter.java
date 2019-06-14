@@ -10,6 +10,7 @@ public class MonitorAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private Team[] list;
+    private int number_of_quests = -1;
 
     static class ViewHolder{
         TextView name;
@@ -17,9 +18,10 @@ public class MonitorAdapter extends BaseAdapter {
         TextView quests_completed;
     }
 
-    public MonitorAdapter(Team[] t, LayoutInflater inflater){
+    public MonitorAdapter(Team[] t, LayoutInflater inflater, int n){
         this.list = t;
         this.inflater = inflater;
+        this.number_of_quests = n;
     }
 
     @Override
@@ -49,8 +51,17 @@ public class MonitorAdapter extends BaseAdapter {
             holder = (MonitorAdapter.ViewHolder) convertView.getTag();
         }
 
-        String cur = "正在進行第 " + (list[position].current_quest + 1) + " 關";
-        String com = "已完成關卡數： " + list[position].quest_number;
+        String cur, com;
+
+        if(number_of_quests == list[position].quest_number) {
+            cur = "已完成所有關卡";
+            com = "";
+            holder.quests_completed.setVisibility(View.GONE);
+        }
+        else{
+            cur = "正在進行第 " + (list[position].current_quest + 1) + " 關";
+            com = "已完成關卡數： " + list[position].quest_number;
+        }
 
         holder.name.setText(list[position].name);
         holder.current_quest.setText(cur);

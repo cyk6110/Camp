@@ -2,7 +2,7 @@ package com.cyk.camp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -64,11 +64,19 @@ public class WaitAdminActivity extends AppCompatActivity {
     }
 
     public void start(View view){
+
+        long startTime = System.currentTimeMillis();
+        db = FirebaseDatabase.getInstance();
+
+        //把start_time存到db和shared preference
+        db.getReference().child("start_time").setValue(startTime);
+        getSharedPreferences("data", MODE_PRIVATE).edit()
+                .putLong("start_time", startTime)
+                .apply();
+
         //change status
 
-        db = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = db.getReference().child("status");
-        myRef.setValue(3);
+        db.getReference().child("status").setValue(3);
 
         Intent myIntent = new Intent(this, MonitorActivity.class);
         startActivity(myIntent);

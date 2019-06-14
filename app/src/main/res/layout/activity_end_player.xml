@@ -5,17 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+
     tools:context=".EndPlayerActivity">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/tv_end_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
         android:text="遊戲已結束"
         android:textSize="24sp"
         android:textColor="#EEE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/tv_rank" />
+    <TextView
+        android:id="@+id/tv_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_end_text"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
+        android:visibility="gone"
+        android:textSize="28sp"
+        android:textColor="#EEE"
+        android:text="排名："/>
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_rank"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        android:textSize="28sp"
+        android:textColor="#EEE"
+        android:text="所花時間：00:00"/>
 
 </android.support.constraint.ConstraintLayout>

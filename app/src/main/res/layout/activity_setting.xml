@@ -33,7 +33,7 @@
             android:layout_below="@id/et_setting_name"
             style="@style/EditText"
             android:layout_margin="5dp"
-            android:hint="關卡範圍半徑(預設為10公尺)"
+            android:hint="關卡範圍半徑(預設為15公尺)"
             android:inputType="number"/>
 
         <EditText
@@ -62,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/et_setting_password"
+            android:visibility="gone"
             android:text="上傳"/>
 
 
@@ -71,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_below="@id/btn_setting_upload"
+            android:visibility="gone"
             android:text="主畫面圖片"
             android:textSize="20sp"/>
 

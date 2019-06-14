@@ -68,10 +68,10 @@ public class SettingActivity extends AppCompatActivity {
             if(radius.length() > 0)
                 myRef.child("radius").setValue(Integer.parseInt(radius));
             else
-                myRef.child("radius").setValue(10);
+                myRef.child("radius").setValue(15);
 
             if(text.length() > 0)
-                myRef.child("text").setValue(text);
+                myRef.child("description").setValue(text);
 
             myRef.child("password").setValue(password);
 

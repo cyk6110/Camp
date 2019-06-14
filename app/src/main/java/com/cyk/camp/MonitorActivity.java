@@ -23,6 +23,7 @@ public class MonitorActivity extends AppCompatActivity {
     private Context context = this;
     TextView tv_time;
     long startTime = 0, millis = 0;
+    private int number_of_quests = -1;
     private ValueEventListener newTeamListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -40,16 +41,16 @@ public class MonitorActivity extends AppCompatActivity {
 
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, str);
 
-
             ListView listView = (ListView) findViewById(R.id.listview_monitor);
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            MonitorAdapter adapter = new MonitorAdapter(list, inflater);
+            MonitorAdapter adapter = new MonitorAdapter(list, inflater, number_of_quests);
             listView.setAdapter(adapter);
         }
         @Override
         public void onCancelled(DatabaseError databaseError) {
         }
     };
+
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
 
@@ -78,8 +79,14 @@ public class MonitorActivity extends AppCompatActivity {
         myRef.child("teams").addValueEventListener(newTeamListener);
 
         tv_time = findViewById(R.id.tv_timer);
-        startTime = System.currentTimeMillis();
+
+        startTime = getSharedPreferences("data", MODE_PRIVATE)
+                .getLong("start_time", -1);
+
         timerHandler.postDelayed(timerRunnable, 0);
+
+        number_of_quests = getSharedPreferences("data", MODE_PRIVATE)
+                .getInt("number_of_quests", -1);
     }
 
     public void endGame(View view){
