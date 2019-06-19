@@ -130,7 +130,10 @@ public class LoginActivity extends AppCompatActivity {
         final String game_name = et_game_name.getText().toString();
 
         Log.d("tag_s", s);
-        if(s.length() == 0){
+        if(game_name.length() == 0){
+            Toast.makeText(this, "請填入遊戲名稱", Toast.LENGTH_SHORT).show();
+        }
+        else if(s.length() == 0){
             Toast.makeText(this, "請填入隊名", Toast.LENGTH_SHORT).show();
         }
         else if(pw.length() == 0){

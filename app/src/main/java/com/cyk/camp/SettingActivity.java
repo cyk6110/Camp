@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -61,7 +62,13 @@ public class SettingActivity extends AppCompatActivity {
         String text = et_text.getText().toString();
         String password = et_password.getText().toString();
 
-        if(name.length() > 0 && password.length() > 0) {
+        if(name.length() == 0)
+            Toast.makeText(this, "請輸入遊戲名稱", Toast.LENGTH_SHORT).show();
+        else if(text.length() == 0)
+            Toast.makeText(this, "請輸入遊戲敘述", Toast.LENGTH_SHORT).show();
+        else if(password.length() == 0)
+            Toast.makeText(this, "請輸入遊戲密碼", Toast.LENGTH_SHORT).show();
+        else{
 
             myRef.child("name").setValue(name);
 
@@ -75,15 +82,14 @@ public class SettingActivity extends AppCompatActivity {
 
             myRef.child("password").setValue(password);
 
+            Intent myIntent = new Intent(this, QuestEditActivity.class);
+            startActivity(myIntent);
+            //myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //finish();
+            //return;
+
         }
 
-
-
-        Intent myIntent = new Intent(this, QuestEditActivity.class);
-        startActivity(myIntent);
-        //myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //finish();
-        //return;
     }
     public void pick(){
         Intent picker = new Intent(Intent.ACTION_GET_CONTENT);
