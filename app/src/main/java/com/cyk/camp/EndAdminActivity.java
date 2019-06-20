@@ -14,6 +14,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+
 public class EndAdminActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
@@ -25,12 +31,13 @@ public class EndAdminActivity extends AppCompatActivity {
             int cnt = 0;
             Rank[] list = new Rank[n];
 
-
             for (DataSnapshot rankSnapshot: dataSnapshot.getChildren()) {
                 Rank r = rankSnapshot.getValue(Rank.class);
                 list[cnt] = r;
                 cnt++;
             }
+
+            Arrays.sort(list, new RankComparator());
 
             ListView listView = (ListView) findViewById(R.id.listview_end_admin);
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -90,5 +97,13 @@ public class EndAdminActivity extends AppCompatActivity {
         myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
         return;
+    }
+}
+
+class RankComparator implements Comparator<Rank> {
+    @Override
+    public int compare(Rank a, Rank b) {
+        return (a.time < b.time ? -1 : a.time == b.time ? 0 : 1);
+        //return Long.compare(a.time, b.time);
     }
 }
