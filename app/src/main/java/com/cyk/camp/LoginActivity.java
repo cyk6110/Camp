@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.enums.Display;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,8 +49,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         AppUpdater appUpdater = new AppUpdater(this)
+                .setDisplay(Display.DIALOG)
                 .setUpdateFrom(UpdateFrom.GITHUB)
-                .setGitHubUserAndRepo("cyk6110", "Camp");
+                .setGitHubUserAndRepo("cyk6110", "Camp")
+                .showAppUpdated(true);
         appUpdater.start();
 
         db = FirebaseDatabase.getInstance();
