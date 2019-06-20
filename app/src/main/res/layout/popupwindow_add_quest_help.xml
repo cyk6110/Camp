@@ -10,16 +10,19 @@
         android:layout_margin="10dp"
         android:padding="20dp"
         android:orientation="vertical"
-        android:background="#98AAFFCC">
+        android:background="#98444444">
         <TextView
+            android:textColor="#FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="＊藍色圓圈為您的位置，紅色標記為欲設定的關卡位置"/>
         <TextView
+            android:textColor="#FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="＊按下定位按鈕或點擊地圖可指定關卡位置"/>
         <TextView
+            android:textColor="#FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="＊若有多種答案，可用空白鍵分隔"/>
