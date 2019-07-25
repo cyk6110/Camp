@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
-
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -21,7 +21,9 @@
 
     <style name="EditText">
         <item name="android:background">@drawable/edittext_bg</item>
-        <item name="android:padding">15dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">12dp</item>
     </style>
     <style name="LoginEditText">
         <item name="android:background">@drawable/login_edittext_bg</item>

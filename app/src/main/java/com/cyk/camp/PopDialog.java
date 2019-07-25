@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +25,6 @@ public class PopDialog extends DialogFragment {
     public interface MyDialogFragmentListener {
         public void onReturnValue(String foo);
     }
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -39,14 +40,33 @@ public class PopDialog extends DialogFragment {
         Log.d("tag_question", question);
 
         TextView tv = view.findViewById(R.id.tv_quest_dialog_question);
-        tv.setText(question);
+        final EditText editText = (EditText) getDialog().findViewById(R.id.et_quest_dialog_answer);
+
+        // 選擇題
+        if(question.substring(0,15).equals("multiple_choice")){
+            Spinner sp = getDialog().findViewById(R.id.dialog_spinner_answer);
+            sp.setVisibility(View.VISIBLE);
+            // 設選項
+            // 設listener
+            ArrayAdapter<CharSequence> adapter_answer = ArrayAdapter.createFromResource(getActivity(), R.array.spinner_answer,
+                    android.R.layout.simple_spinner_item);
+            adapter_answer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            sp.setAdapter(adapter_answer);
 
 
+            String[] q = question.split(" ");
+            String s = getString(R.string.mul_choice, q[1], q[2], q[3], q[4], q[5]);
+            tv.setText(s);
+        }
+        else{
+            tv.setText(question);
+            editText.setVisibility(View.VISIBLE);
+        }
         builder.setView(view)
             .setPositiveButton("答題", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    EditText editText = (EditText) getDialog().findViewById(R.id.et_quest_dialog_answer);
+
                     if (!editText.getText().toString().matches("")) {
                         //Log.d("tag_dialog_answer", answer);
 

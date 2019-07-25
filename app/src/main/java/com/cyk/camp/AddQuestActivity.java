@@ -16,9 +16,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -58,8 +61,10 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
     private DatabaseReference myRef;
     private EditText et_q;
     private EditText et_a;
+    private EditText et_a1, et_a2, et_a3, et_a4;
     private EditText et_h;
-    private Switch switch_empty;
+    private Spinner spinner, spinner_answer;
+    private int spinner_choice = 0, correct_answer = 0;
 
     private Context context = this;
 
@@ -80,21 +85,71 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
         et_q = findViewById(R.id.et_question);
         et_a = findViewById(R.id.et_answer);
         et_h = findViewById(R.id.et_hint);
-        switch_empty = findViewById(R.id.switch_empty);
+        et_a1 = findViewById(R.id.et_choice_1);
+        et_a2 = findViewById(R.id.et_choice_2);
+        et_a3 = findViewById(R.id.et_choice_3);
+        et_a4 = findViewById(R.id.et_choice_4);
 
-        switch_empty.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        spinner = findViewById(R.id.spinner_question_type);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.question_type,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner_answer = findViewById(R.id.spinner_answer);
+        ArrayAdapter<CharSequence> adapter_answer = ArrayAdapter.createFromResource(this, R.array.spinner_answer,
+                android.R.layout.simple_spinner_item);
+        adapter_answer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_answer.setAdapter(adapter_answer);
+        //spinner.setSelection(0);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    et_q.setVisibility(View.GONE);
-                    et_a.setVisibility(View.GONE);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinner_choice = position;
+                //改變layout
+                if(spinner_choice == 0 || spinner_choice == 2) {
+                    et_q.setVisibility(View.VISIBLE);
+                    if(spinner_choice == 0) {
+                        //問答題
+                        et_a.setVisibility(View.VISIBLE);
+                        et_a1.setVisibility(View.GONE);
+                        et_a2.setVisibility(View.GONE);
+                        et_a3.setVisibility(View.GONE);
+                        et_a4.setVisibility(View.GONE);
+                    }
+                    else {
+                        //選擇題
+                        et_a.setVisibility(View.GONE);
+                        et_a1.setVisibility(View.VISIBLE);
+                        et_a2.setVisibility(View.VISIBLE);
+                        et_a3.setVisibility(View.VISIBLE);
+                        et_a4.setVisibility(View.VISIBLE);
+                    }
                 }
                 else {
-                    et_q.setVisibility(View.VISIBLE);
-                    et_a.setVisibility(View.VISIBLE);
+                    //走到就過關
+                    et_a.setVisibility(View.GONE);
+                    et_a1.setVisibility(View.GONE);
+                    et_a2.setVisibility(View.GONE);
+                    et_a3.setVisibility(View.GONE);
+                    et_a4.setVisibility(View.GONE);
                 }
             }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+        spinner_answer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                correct_answer = position;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
     }
@@ -113,7 +168,7 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
         //mMap.setOnMyLocationButtonClickListener(this);
-        mMap.setOnMyLocationClickListener(this);
+        //mMap.setOnMyLocationClickListener(this);
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -130,60 +185,111 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
             }
         });
 
-        getLocation(findViewById(R.id.btn_get_location));
+        getLocation(findViewById(R.id.btn_locate));
         //findViewById(R.id.btn_get_location).performClick();
 
     }
     public void newQuest(View view){
 
-        if(switch_empty.isChecked() && !et_h.getText().toString().matches("")){
-            //no question & answer
-            Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
+        if(spinner_choice == 0){
+            //問答題
+            if(et_a.getText().toString().length() == 0 || et_q.getText().toString().length() == 0 ||
+                    et_h.getText().toString().length() == 0) {
+                //有欄位是空的
+                Toast.makeText(AddQuestActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
 
-            q = "走到就過關";
-            a = "走到就過關";
-            h = et_h.getText().toString();
+                q = et_q.getText().toString();
+                a = et_a.getText().toString();
+                h = et_h.getText().toString();
 
-            et_a.getText().clear();
-            et_q.getText().clear();
-            et_h.getText().clear();
+                et_a.getText().clear();
+                et_q.getText().clear();
+                et_h.getText().clear();
 
-            key = myRef.push().getKey();
+                key = myRef.push().getKey();
+
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        n = (int) snapshot.getChildrenCount();
+                        Log.d("tag_children_count", String.valueOf(n));
+
+                        Quest quest = new Quest(n, q, a, latitude, longitude, h);
+                        myRef.child(key).setValue(quest);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
         }
-        else if(switch_empty.isChecked() && et_h.getText().toString().matches(""))
-            Toast.makeText(AddQuestActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
-        else if(et_a.getText().toString().matches("") || et_q.getText().toString().matches("") ||
-                et_h.getText().toString().matches("")) {
-            //empty
-            Toast.makeText(AddQuestActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
+        else if(spinner_choice == 1){
+            //走到就過關
+
+            if(et_h.getText().toString().length() == 0) {
+                //沒輸入提示
+                Toast.makeText(AddQuestActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
+
+                q = "走到就過關";
+                a = "走到就過關";
+                h = et_h.getText().toString();
+
+                et_a.getText().clear();
+                et_q.getText().clear();
+                et_h.getText().clear();
+
+                key = myRef.push().getKey();
+            }
         }
-        else {
-            Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
+        else if(spinner_choice == 2){
+            //選擇題
+            if(et_q.getText().toString().length() == 0 ||
+                    et_a1.getText().toString().length() == 0 ||
+                    et_a2.getText().toString().length() == 0 ||
+                    et_a3.getText().toString().length() == 0 ||
+                    et_a4.getText().toString().length() == 0 ||
+                    et_h.getText().toString().length() == 0){
+                //有欄位是空的
+                Toast.makeText(AddQuestActivity.this, "欄位不可留空", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "已新增", Toast.LENGTH_SHORT).show();
 
-            q = et_q.getText().toString();
-            a = et_a.getText().toString();
-            h = et_h.getText().toString();
+                String a1, a2, a3, a4;
+                a1 = et_a1.getText().toString();
+                a2 = et_a2.getText().toString();
+                a3 = et_a3.getText().toString();
+                a4 = et_a4.getText().toString();
 
-            et_a.getText().clear();
-            et_q.getText().clear();
-            et_h.getText().clear();
+                q = "multiple_choice " + et_q.getText().toString()  + " " + a1 + " " + a2 + " " + a3 + " " + a4;
+                a = String.valueOf(correct_answer);
+                h = et_h.getText().toString();
 
-            key = myRef.push().getKey();
+                key = myRef.push().getKey();
 
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    n = (int)snapshot.getChildrenCount();
-                    Log.d("tag_children_count", String.valueOf(n));
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        n = (int) snapshot.getChildrenCount();
 
-                    Quest quest = new Quest(n, q, a, latitude, longitude, h);
-                    myRef.child(key).setValue(quest);
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
+                        Quest quest = new Quest(n, q, a, latitude, longitude, h);
+                        myRef.child(key).setValue(quest);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
         }
+
     }
 
     public void getLocation(View view){
@@ -245,4 +351,5 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
         Log.d("tag_location", "location button clicked");
         return false;
     }
+
 }

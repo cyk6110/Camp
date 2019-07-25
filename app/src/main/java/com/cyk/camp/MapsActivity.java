@@ -54,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private List<Integer> order = new ArrayList<>();
     private int total_quests;
     private int status;
-    private Context context = this;
+    public Context context = this;
     private long complete_time, start_time = -1;
 
     /*

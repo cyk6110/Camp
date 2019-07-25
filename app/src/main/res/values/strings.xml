@@ -2,4 +2,17 @@
     <string name="app_name">Camp</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_end_admin">EndAdminActivity</string>
+    <string name="mul_choice">%s\n1. %s\n2. %s\n3. %s\n4. %s</string>
+    <string-array name="question_type">
+        <item>問答題</item>
+        <item>走到就通過</item>
+        <item>選擇題</item>
+    </string-array>
+    <string-array name="spinner_answer">
+        <item>選項1</item>
+        <item>選項2</item>
+        <item>選項3</item>
+        <item>選項4</item>
+    </string-array>
 </resources>
+

@@ -1,108 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddQuestActivity">
+    android:gravity="bottom"
+    sothree:umanoPanelHeight="40dp"
+    sothree:umanoShadowHeight="0dp"
+    sothree:umanoOverlay="true">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:context=".AddQuestActivity" />
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        android:id="@+id/btn_back"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:onClick="back"
-        android:text="返回" />
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            sothree:layout_constraintEnd_toEndOf="parent"
+            tools:context=".AddQuestActivity" />
 
-    <Button
-        android:id="@+id/btn_help"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/ic_help"
-        android:onClick="help"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btn_back"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:onClick="back"
+            android:text="返回" />
+
+        <Button
+            android:id="@+id/btn_help"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/ic_help"
+            android:onClick="help"
+            sothree:layout_constraintEnd_toEndOf="parent"
+            sothree:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_locate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/ic_locate"
+            android:onClick="getLocation"
+            sothree:layout_constraintEnd_toEndOf="parent"
+            sothree:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:background="@drawable/panel_bg"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="10dp"
+        sothree:layout_constraintBottom_toBottomOf="parent"
+        sothree:layout_constraintEnd_toEndOf="parent"
+        sothree:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/ic_slide_up"/>
+        <!---
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/line"/>
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/line"/>
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/line"/>
+                -->
 
             <EditText
                 android:id="@+id/et_question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="3dp"
                 style="@style/EditText"
                 android:hint="問題"
                 android:inputType="text" />
-
-
             <EditText
                 android:id="@+id/et_answer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="3dp"
                 style="@style/EditText"
                 android:hint="答案"
                 android:inputType="text" />
 
+            <LinearLayout
+                android:id="@+id/layout_choice"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <EditText
+                        android:id="@+id/et_choice_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        style="@style/EditText"
+                        android:hint="選項1"
+                        android:inputType="text" />
+                    <EditText
+                        android:id="@+id/et_choice_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        style="@style/EditText"
+                        android:hint="選項2"
+                        android:inputType="text" />
+                    <EditText
+                        android:id="@+id/et_choice_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        style="@style/EditText"
+                        android:hint="選項3"
+                        android:inputType="text" />
+                    <EditText
+                        android:id="@+id/et_choice_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        style="@style/EditText"
+                        android:hint="選項4"
+                        android:inputType="text" />
+                </LinearLayout>
+            </LinearLayout>
             <EditText
                 android:id="@+id/et_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="3dp"
                 style="@style/EditText"
                 android:hint="提示"
                 android:inputType="text" />
-
-        <LinearLayout
+        <Spinner
+            android:id="@+id/spinner_answer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="走到就過關"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"/>
-            <Switch
-                android:id="@+id/switch_empty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"/>
-
-        </LinearLayout>
-
+            android:layout_margin="10dp">
+        </Spinner>
+        <Spinner
+            android:id="@+id/spinner_question_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+        </Spinner>
         <LinearLayout
             android:id="@+id/layout_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_get_location"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:onClick="getLocation"
-                android:text="定位" />
-
             <Button
                 android:id="@+id/btn_new_quest"
                 style="@style/Widget.AppCompat.Button.Colored"
@@ -113,7 +189,4 @@
         </LinearLayout>
     </LinearLayout>
 
-
-
-
-</android.support.constraint.ConstraintLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>
