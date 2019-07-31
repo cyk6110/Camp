@@ -5,6 +5,7 @@
     android:orientation="vertical"
     >
     <RelativeLayout
+        android:id="@+id/map_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -44,7 +45,7 @@
         android:visibility="gone">
 
         <View android:id="@+id/overlay"
-            android:background="#90FFFFFF"
+            android:background="#95FFFFFF"
             android:layout_height="match_parent"
             android:layout_width="match_parent" />
 

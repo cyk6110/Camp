@@ -243,8 +243,23 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-    public void playerLoggedIn(boolean completed){
 
+    public void playerLoggedIn(final boolean completed){
+        myRef.child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                status = snapshot.getValue(Integer.class);
+                Login(completed);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+
+    public void Login(boolean completed){
 
         Intent myIntent;
 
@@ -258,7 +273,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         //already joined
         else {
-
+            Log.d("tag_login", Integer.toString(status));
             //if status = 2
             //wait
             if(status == 2) {
@@ -271,6 +286,7 @@ public class LoginActivity extends AppCompatActivity {
             //if status = 3
             //start map activity
             else if(status == 3) {
+                Log.d("tag_login", "start map activity");
                 myIntent = new Intent(this, MapsActivity.class);
                 startActivity(myIntent);
                 myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -63,7 +63,7 @@ public class QuestAdapter extends BaseAdapter {
         else {
             holder.question.setText(quest_list[position].question);
         }
-        String a = "答案：" + quest_list[position].answer;
+        String a = "答案：" + Integer.toString(Integer.valueOf(quest_list[position].answer) + 1);
         holder.answer.setText(a);
         holder.hint.setText(quest_list[position].hint);
 

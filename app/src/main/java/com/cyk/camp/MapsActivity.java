@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -434,6 +435,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         final RelativeLayout punish_panel = findViewById(R.id.punish_panel);
         punish_panel.setVisibility(View.VISIBLE);
 
+        final Button scan = findViewById(R.id.btn_scan);
+        scan.setClickable(false);
 
         final Handler timerHandler = new Handler();
         Runnable timerRunnable = new Runnable() {
@@ -445,7 +448,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 int minutes = (seconds / 60) % 60;
                 seconds = seconds % 60;
 
-                if(seconds > 0) {
+                if(millis > 0) {
 
                     TextView tv = findViewById(R.id.tv_punish_time);
                     tv.setText(String.format("%02d:%02d", minutes, seconds));
@@ -457,10 +460,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             .remove("punish_time")
                             .apply();
                     punish_panel.setVisibility(View.GONE);
+                    scan.setClickable(true);
                 }
             }
         };
 
+
+
         timerHandler.postDelayed(timerRunnable, 0);
+
     }
 }

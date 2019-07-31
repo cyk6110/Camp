@@ -271,6 +271,8 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                 a2 = et_a2.getText().toString();
                 a3 = et_a3.getText().toString();
                 a4 = et_a4.getText().toString();
+                q = et_q.getText().toString();
+                h = et_h.getText().toString();
 
                 et_a1.getText().clear();
                 et_a2.getText().clear();
@@ -279,9 +281,8 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                 et_q.getText().clear();
                 et_h.getText().clear();
 
-                q = "multiple_choice#" + et_q.getText().toString()  + "#" + a1 + "#" + a2 + "#" + a3 + "#" + a4;
+                q = "multiple_choice#" + q + "#" + a1 + "#" + a2 + "#" + a3 + "#" + a4;
                 a = String.valueOf(correct_answer);
-                h = et_h.getText().toString();
 
                 key = myRef.push().getKey();
 

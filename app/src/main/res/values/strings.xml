@@ -2,7 +2,7 @@
     <string name="app_name">Camp</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_end_admin">EndAdminActivity</string>
-    <string name="mul_choice">%s\n1. %s\n2. %s\n3. %s\n4. %s</string>
+    <string name="mul_choice">%s\n    1. %s\n    2. %s\n    3. %s\n   4. %s</string>
     <string-array name="question_type">
         <item>問答題</item>
         <item>走到就通過</item>

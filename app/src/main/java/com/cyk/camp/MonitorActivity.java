@@ -81,10 +81,6 @@ public class MonitorActivity extends AppCompatActivity {
 
         tv_time = findViewById(R.id.tv_timer);
 
-        startTime = getSharedPreferences("data", MODE_PRIVATE)
-                .getLong("start_time", -1);
-        number_of_quests = getSharedPreferences("data", MODE_PRIVATE)
-                .getInt("number_of_quests", -1);
 
         myRef.child("start_time").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

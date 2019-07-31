@@ -41,11 +41,13 @@ public class PopDialog extends DialogFragment {
         Log.d("tag_question", question);
 
         TextView tv = view.findViewById(R.id.tv_quest_dialog_question);
-        final EditText editText = (EditText) getDialog().findViewById(R.id.et_quest_dialog_answer);
+        final EditText editText = view.findViewById(R.id.et_quest_dialog_answer);
+        Spinner sp = view.findViewById(R.id.dialog_spinner_answer);
 
         // 選擇題
         if(question.substring(0,15).equals("multiple_choice")){
-            Spinner sp = getDialog().findViewById(R.id.dialog_spinner_answer);
+
+
             sp.setVisibility(View.VISIBLE);
             // 設選項
             // 設listener
@@ -78,7 +80,8 @@ public class PopDialog extends DialogFragment {
             .setPositiveButton("答題", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    if(question.substring(0,15).equals("multiple_choice")) {
+
+                    if(!question.substring(0,15).equals("multiple_choice")) {
 
                         if (!editText.getText().toString().matches("")) {
                             //Log.d("tag_dialog_answer", answer);

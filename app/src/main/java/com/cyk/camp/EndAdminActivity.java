@@ -54,11 +54,19 @@ public class EndAdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_admin);
 
-        start_time = getSharedPreferences("data", MODE_PRIVATE)
-                    .getLong("start_time", -1);
-
         db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference();
+
+        myRef.child("start_time").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                start_time = snapshot.getValue(Long.class);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         myRef.child("teams_complete").addListenerForSingleValueEvent(rankListener);
     }
 
@@ -68,11 +76,6 @@ public class EndAdminActivity extends AppCompatActivity {
 
         myRef.removeValue();
         myRef.child("status").setValue(1);
-
-
-        getSharedPreferences("data", MODE_PRIVATE).edit().
-                remove("start_time")
-                .apply();
 
         Intent myIntent = new Intent(this, LoginActivity.class);
         startActivity(myIntent);
@@ -87,10 +90,6 @@ public class EndAdminActivity extends AppCompatActivity {
         myRef.child("teams").removeValue();
         myRef.child("start_time").removeValue();
         myRef.child("teams_complete").removeValue();
-
-        getSharedPreferences("data", MODE_PRIVATE).edit()
-                .remove("start_time")
-                .apply();
 
         Intent myIntent = new Intent(this, WaitAdminActivity.class);
         startActivity(myIntent);
