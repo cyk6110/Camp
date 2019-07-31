@@ -3,6 +3,7 @@ package com.cyk.camp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -82,11 +83,30 @@ public class MonitorActivity extends AppCompatActivity {
 
         startTime = getSharedPreferences("data", MODE_PRIVATE)
                 .getLong("start_time", -1);
+        number_of_quests = getSharedPreferences("data", MODE_PRIVATE)
+                .getInt("number_of_quests", -1);
+
+        myRef.child("start_time").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                startTime = snapshot.getValue(Long.class);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        myRef.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                number_of_quests = (int)snapshot.getChildrenCount();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         timerHandler.postDelayed(timerRunnable, 0);
 
-        number_of_quests = getSharedPreferences("data", MODE_PRIVATE)
-                .getInt("number_of_quests", -1);
     }
 
     public void endGame(View view){

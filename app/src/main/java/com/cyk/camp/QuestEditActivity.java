@@ -124,16 +124,7 @@ public class QuestEditActivity extends AppCompatActivity {
 
     public void complete(View view){
 
-        //push start time
-
-        long startTime = System.currentTimeMillis();
         db = FirebaseDatabase.getInstance();
-
-        //還有quest數量（monitor判斷是否完成用
-        db.getReference().child("start_time").setValue(startTime);
-        getSharedPreferences("data", MODE_PRIVATE).edit()
-                .putInt("number_of_quests", n)
-                .apply();
 
         //change status
 

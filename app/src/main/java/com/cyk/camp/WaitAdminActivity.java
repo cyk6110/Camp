@@ -68,11 +68,8 @@ public class WaitAdminActivity extends AppCompatActivity {
         long startTime = System.currentTimeMillis();
         db = FirebaseDatabase.getInstance();
 
-        //把start_time存到db和shared preference
+        //把start_time存到db
         db.getReference().child("start_time").setValue(startTime);
-        getSharedPreferences("data", MODE_PRIVATE).edit()
-                .putLong("start_time", startTime)
-                .apply();
 
         //change status
 
