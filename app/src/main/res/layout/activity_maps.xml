@@ -4,6 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -30,4 +33,41 @@
         android:layout_marginBottom="50dp"
         android:text="掃描"
         android:onClick="scan"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/punish_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <View android:id="@+id/overlay"
+            android:background="#90FFFFFF"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+
+        <TextView
+            android:id="@+id/tv_punish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center_horizontal"
+            android:text="懲罰時間："
+            android:textColor="#000"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tv_punish_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_punish"
+            android:gravity="center_horizontal"
+            android:text="00:00"
+            android:textColor="#000"
+            android:textSize="24dp" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,7 +22,7 @@ public class PopDialog extends DialogFragment {
 
     public View view;
     public String question;
-
+    public int answer = 0;
     public interface MyDialogFragmentListener {
         public void onReturnValue(String foo);
     }
@@ -53,8 +54,19 @@ public class PopDialog extends DialogFragment {
             adapter_answer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             sp.setAdapter(adapter_answer);
 
+            sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    answer = position;
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            String[] q = question.split(" ");
+                }
+            });
+
+
+            String[] q = question.split("#");
             String s = getString(R.string.mul_choice, q[1], q[2], q[3], q[4], q[5]);
             tv.setText(s);
         }
@@ -66,19 +78,23 @@ public class PopDialog extends DialogFragment {
             .setPositiveButton("答題", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
+                    if(question.substring(0,15).equals("multiple_choice")) {
 
-                    if (!editText.getText().toString().matches("")) {
-                        //Log.d("tag_dialog_answer", answer);
+                        if (!editText.getText().toString().matches("")) {
+                            //Log.d("tag_dialog_answer", answer);
 
+                            MyDialogFragmentListener activity = (MyDialogFragmentListener) getActivity();
+                            activity.onReturnValue(editText.getText().toString());
+                        } else {
+                            Toast toast = Toast.makeText(getActivity(), "請輸入答案", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 400);
+                            toast.show();
+                        }
+                    }
+                    else {
                         MyDialogFragmentListener activity = (MyDialogFragmentListener) getActivity();
-                        activity.onReturnValue(editText.getText().toString());
+                        activity.onReturnValue("multiple_choice#" + String.valueOf(answer));
                     }
-                    else{
-                        Toast toast = Toast.makeText(getActivity(), "請輸入答案", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 400);
-                        toast.show();
-                    }
-
 
                 }
             })

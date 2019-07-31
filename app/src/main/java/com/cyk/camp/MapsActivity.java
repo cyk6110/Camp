@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,6 +17,8 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -56,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private int status;
     public Context context = this;
     private long complete_time, start_time = -1;
+    long millis = 0;
 
     /*
     排名＆計時:
@@ -177,6 +181,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+        }
+
+        if(getSharedPreferences("data", MODE_PRIVATE)
+                .getLong("punish_time", -1) != -1){
+            punish();
         }
     }
 
@@ -305,13 +314,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Log.d("tag_correct", quests.get(team.current_quest).answer);
 
         //if the answer is correct, update team info
-        //切關鍵字&檢查
-        String[] keywords = quests.get(team.current_quest).answer.split(" ");
+
         boolean match = false;
-        for(String s:keywords){
-            if(foo.equals(s)){
+
+        // 選擇題
+        if(foo.substring(0,15).equals("multiple_choice")){
+            if(foo.split("#")[1].equals(quests.get(team.current_quest).answer))
                 match = true;
-                break;
+        }
+        else {
+            //切關鍵字&檢查
+            String[] keywords = quests.get(team.current_quest).answer.split("#");
+            for (String s : keywords) {
+                if (foo.equals(s)) {
+                    match = true;
+                    break;
+                }
             }
         }
         if(match){
@@ -333,6 +351,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             Toast toast = Toast.makeText(this, "答錯囉", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 400);
             toast.show();
+
+            // 選擇選錯懲罰
+            final long punish_time = System.currentTimeMillis() + 120000;
+            getSharedPreferences("data", MODE_PRIVATE).edit()
+                    .putLong("punish_time", punish_time)
+                    .apply();
+            punish();
+
         }
 
 
@@ -398,5 +424,43 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         // Return false so that we don't consume the event and the default behavior still occurs
         Log.d("tag_location", "location button clicked");
         return false;
+    }
+
+    public void punish(){
+
+        final long punish_time = getSharedPreferences("data", MODE_PRIVATE)
+                .getLong("punish_time", -1);
+
+        final RelativeLayout punish_panel = findViewById(R.id.punish_panel);
+        punish_panel.setVisibility(View.VISIBLE);
+
+
+        final Handler timerHandler = new Handler();
+        Runnable timerRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                millis = punish_time - System.currentTimeMillis();
+                int seconds = (int) (millis / 1000);
+                int minutes = (seconds / 60) % 60;
+                seconds = seconds % 60;
+
+                if(seconds > 0) {
+
+                    TextView tv = findViewById(R.id.tv_punish_time);
+                    tv.setText(String.format("%02d:%02d", minutes, seconds));
+
+                    timerHandler.postDelayed(this, 500);
+                }
+                else{
+                    getSharedPreferences("data", MODE_PRIVATE).edit()
+                            .remove("punish_time")
+                            .apply();
+                    punish_panel.setVisibility(View.GONE);
+                }
+            }
+        };
+
+        timerHandler.postDelayed(timerRunnable, 0);
     }
 }

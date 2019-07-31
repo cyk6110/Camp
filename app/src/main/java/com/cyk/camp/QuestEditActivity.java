@@ -44,7 +44,7 @@ public class QuestEditActivity extends AppCompatActivity {
 
             ListView listView = (ListView) findViewById(R.id.listview_quest);
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            QuestAdapter adapter = new QuestAdapter(list, inflater);
+            QuestAdapter adapter = new QuestAdapter(list, inflater, context);
             listView.setAdapter(adapter);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

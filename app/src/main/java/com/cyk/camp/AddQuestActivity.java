@@ -112,6 +112,7 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                     et_q.setVisibility(View.VISIBLE);
                     if(spinner_choice == 0) {
                         //問答題
+                        spinner_answer.setVisibility(View.GONE);
                         et_a.setVisibility(View.VISIBLE);
                         et_a1.setVisibility(View.GONE);
                         et_a2.setVisibility(View.GONE);
@@ -120,6 +121,7 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                     }
                     else {
                         //選擇題
+                        spinner_answer.setVisibility(View.VISIBLE);
                         et_a.setVisibility(View.GONE);
                         et_a1.setVisibility(View.VISIBLE);
                         et_a2.setVisibility(View.VISIBLE);
@@ -129,7 +131,9 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                 }
                 else {
                     //走到就過關
+                    spinner_answer.setVisibility(View.GONE);
                     et_a.setVisibility(View.GONE);
+                    et_q.setVisibility(View.GONE);
                     et_a1.setVisibility(View.GONE);
                     et_a2.setVisibility(View.GONE);
                     et_a3.setVisibility(View.GONE);
@@ -268,7 +272,14 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                 a3 = et_a3.getText().toString();
                 a4 = et_a4.getText().toString();
 
-                q = "multiple_choice " + et_q.getText().toString()  + " " + a1 + " " + a2 + " " + a3 + " " + a4;
+                et_a1.getText().clear();
+                et_a2.getText().clear();
+                et_a3.getText().clear();
+                et_a4.getText().clear();
+                et_q.getText().clear();
+                et_h.getText().clear();
+
+                q = "multiple_choice#" + et_q.getText().toString()  + "#" + a1 + "#" + a2 + "#" + a3 + "#" + a4;
                 a = String.valueOf(correct_answer);
                 h = et_h.getText().toString();
 

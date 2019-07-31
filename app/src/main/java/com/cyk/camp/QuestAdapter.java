@@ -1,5 +1,6 @@
 package com.cyk.camp;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ public class QuestAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private Quest[] quest_list;
+    Context context;
 
     static class ViewHolder{
         TextView question;
@@ -18,9 +20,10 @@ public class QuestAdapter extends BaseAdapter {
         TextView hint;
     }
 
-    public QuestAdapter(Quest[] q, LayoutInflater inflater){
+    public QuestAdapter(Quest[] q, LayoutInflater inflater, Context c){
         this.quest_list = q;
         this.inflater = inflater;
+        this.context = c;
     }
 
     @Override
@@ -50,8 +53,18 @@ public class QuestAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.question.setText(quest_list[position].question);
-        holder.answer.setText(quest_list[position].answer);
+        String q = quest_list[position].question;
+
+        if(q.substring(0, 15).equals("multiple_choice")){
+            String[] arr = q.split("#");
+            String s = context.getResources().getString(R.string.mul_choice, arr[1], arr[2], arr[3], arr[4], arr[5]);
+            holder.question.setText(s);
+        }
+        else {
+            holder.question.setText(quest_list[position].question);
+        }
+        String a = "答案：" + quest_list[position].answer;
+        holder.answer.setText(a);
         holder.hint.setText(quest_list[position].hint);
 
 
