@@ -77,9 +77,7 @@ public class MonitorActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference();
 
-        myRef.child("teams").addValueEventListener(newTeamListener);
 
-        tv_time = findViewById(R.id.tv_timer);
 
 
         myRef.child("start_time").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -100,6 +98,10 @@ public class MonitorActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        myRef.child("teams").addValueEventListener(newTeamListener);
+
+        tv_time = findViewById(R.id.tv_timer);
 
         timerHandler.postDelayed(timerRunnable, 0);
 

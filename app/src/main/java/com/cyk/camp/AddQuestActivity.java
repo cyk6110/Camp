@@ -250,6 +250,20 @@ public class AddQuestActivity extends FragmentActivity implements GoogleMap.OnMy
                 et_h.getText().clear();
 
                 key = myRef.push().getKey();
+
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        n = (int) snapshot.getChildrenCount();
+
+                        Quest quest = new Quest(n, q, a, latitude, longitude, h);
+                        myRef.child(key).setValue(quest);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
             }
         }
         else if(spinner_choice == 2){

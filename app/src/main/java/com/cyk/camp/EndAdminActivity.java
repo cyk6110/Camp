@@ -23,7 +23,6 @@ import java.util.Comparator;
 public class EndAdminActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
-    long start_time;
     private ValueEventListener rankListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -56,16 +55,6 @@ public class EndAdminActivity extends AppCompatActivity {
 
         db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference();
-
-        myRef.child("start_time").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                start_time = snapshot.getValue(Long.class);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
 
         myRef.child("teams_complete").addListenerForSingleValueEvent(rankListener);
     }

@@ -61,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public Context context = this;
     private long complete_time, start_time = -1;
     long millis = 0;
+    private Boolean team_ready = false, quests_ready = false;
 
     /*
     排名＆計時:
@@ -101,9 +102,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         DatabaseReference myRef = db.getReference();
-
-        start_time = getSharedPreferences("data", MODE_PRIVATE)
-                .getLong("start_time", -1);
 
         myRef.child("status").addValueEventListener(new ValueEventListener() {
             @Override
@@ -160,6 +158,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     team = snapshot.getValue(Team.class);
                     Log.d("tag_team_name", team.name);
                     Log.d("tag_team_quest_number", String.valueOf(team.quest_number));
+                    team_ready = true;
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -177,6 +176,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         quests.add(q);
                         //Log.d("tag_get_answer", q.answer);
                     }
+                    quests_ready = true;
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -219,6 +219,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     public void scan(View view){
+
+        if(!team_ready || !quests_ready)
+            return;
 
         getLocation();
 
