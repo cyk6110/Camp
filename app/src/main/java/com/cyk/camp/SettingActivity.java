@@ -1,20 +1,27 @@
 package com.cyk.camp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
+import com.google.firebase.storage.UploadTask;
 
 
 public class SettingActivity extends AppCompatActivity {
@@ -25,24 +32,48 @@ public class SettingActivity extends AppCompatActivity {
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
-    private Uri uri;
+    private ImageView img;
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        img = findViewById(R.id.img);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICKER) {
-            if (resultCode == Activity.RESULT_OK) {
-                Uri uri = data.getData();
-                String path = uri.getPath();
-                //Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+        Uri uri = data.getData();
+        StorageReference up = storageRef.child("images/main.jpg");
+        up.putFile(uri).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Log.d("tag_path", "upload failed");
             }
-        }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                Log.d("tag_path", taskSnapshot.getMetadata().toString());
+
+            }
+        });
+        GlideApp.with(context)
+                .load(uri)
+                .centerCrop()
+                .into(img);
+
+    }
+
+
+    public void upload(View view){
+        Intent picker = new Intent(Intent.ACTION_PICK);
+        picker.setType("image/*");
+        startActivityForResult(picker, 0);
     }
 
 
@@ -90,12 +121,5 @@ public class SettingActivity extends AppCompatActivity {
 
         }
 
-    }
-    public void pick(){
-        Intent picker = new Intent(Intent.ACTION_GET_CONTENT);
-        picker.setType("image/*");
-        picker.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        Intent destIntent = Intent.createChooser(picker, null);
-        startActivityForResult(destIntent, PICKER);
     }
 }

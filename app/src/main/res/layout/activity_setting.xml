@@ -56,25 +56,32 @@
             android:layout_margin="5dp"
             android:hint="遊戲密碼" />
 
-        <Button
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:id="@+id/btn_setting_upload"
+        <ImageView
+            android:id="@+id/img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/et_setting_password"
-            android:visibility="gone"
-            android:text="上傳"/>
-
+            android:layout_below="@id/et_setting_password"/>
 
         <TextView
             android:id="@+id/tv_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_below="@id/btn_setting_upload"
-            android:visibility="gone"
+            android:layout_below="@id/img"
+            android:layout_centerHorizontal="true"
             android:text="主畫面圖片"
             android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/btn_setting_upload"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_pic"
+            android:layout_centerHorizontal="true"
+            android:onClick="upload"
+            android:text="上傳" />
+
 
     </RelativeLayout>
 
