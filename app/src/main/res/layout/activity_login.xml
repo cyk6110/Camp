@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp">
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="100dp">
 
 
         <EditText
@@ -74,7 +75,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
-        android:text="GO"
+        android:text="進入遊戲"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_login_password"
         app:layout_constraintStart_toStartOf="parent"

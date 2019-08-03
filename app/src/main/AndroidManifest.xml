@@ -60,8 +60,6 @@
         <activity android:name=".WaitAdminActivity" />
         <activity android:name=".MonitorActivity" />
         <activity android:name=".EndAdminActivity" />
-        <activity android:name=".TestActivity"
-            android:exported="true" />
     </application>
 
 </manifest>

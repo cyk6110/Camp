@@ -1,6 +1,5 @@
 package com.cyk.camp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -13,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,16 +23,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
 public class SettingActivity extends AppCompatActivity {
 
-    private static final int PICKER = 100;
+    //private static final int PICKER = 100;
 
     private FirebaseDatabase db;
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
     private ImageView img;
+    private TextView tv_img;
     private Context context = this;
 
     @Override
@@ -40,13 +40,15 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         img = findViewById(R.id.img);
+        tv_img = findViewById(R.id.tv_pic);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Uri uri = data.getData();
-        StorageReference up = storageRef.child("images/main.jpg");
+        tv_img.setText(uri.getPath());
+        final StorageReference up = storageRef.child("images/main.jpg");
         up.putFile(uri).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
@@ -59,7 +61,6 @@ public class SettingActivity extends AppCompatActivity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
                 Log.d("tag_path", taskSnapshot.getMetadata().toString());
-
             }
         });
         GlideApp.with(context)
@@ -68,14 +69,12 @@ public class SettingActivity extends AppCompatActivity {
                 .into(img);
 
     }
-
-
+    
     public void upload(View view){
         Intent picker = new Intent(Intent.ACTION_PICK);
         picker.setType("image/*");
         startActivityForResult(picker, 0);
     }
-
 
     public void next(View view){
 
