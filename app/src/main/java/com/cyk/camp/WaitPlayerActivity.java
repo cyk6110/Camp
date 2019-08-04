@@ -2,38 +2,30 @@ package com.cyk.camp;
 
 import android.content.Context;
 import android.content.Intent;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
-
-import static android.view.View.GONE;
 
 public class WaitPlayerActivity extends AppCompatActivity {
 
@@ -101,27 +93,28 @@ public class WaitPlayerActivity extends AppCompatActivity {
         final StorageReference main_img = storageRef.child("images/main.jpg");
         final ImageView img = findViewById(R.id.img_main_wait_player);
 
-        img.setVisibility(View.VISIBLE);
-
         Log.d("tag_url", main_img.getPath());
 
-        GlideApp.with(context)
+        GlideApp.with(this)
                 .load(main_img)
-                /*
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         Log.d("tag_load", "load failed");
+                        img.setVisibility(View.GONE);
                         return false;
                     }
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        img.setVisibility(View.VISIBLE);
                         Log.d("tag_load", "ready");
+                        if(resource.getIntrinsicHeight() > resource.getIntrinsicWidth())
+                            img.getLayoutParams().height = 300;
                         return false;
                     }
                 })
-                */
+
                 .into(img);
 
 

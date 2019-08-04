@@ -2,7 +2,7 @@ package com.cyk.camp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 
 public class EndAdminActivity extends AppCompatActivity {

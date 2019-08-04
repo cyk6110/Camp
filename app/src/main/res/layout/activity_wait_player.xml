@@ -28,10 +28,8 @@
         <ImageView
             android:id="@+id/img_main_wait_player"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:maxHeight="200dp"
-            android:layout_marginTop="5dp"
-            android:scaleType="centerInside"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp" />
 
     </LinearLayout>
 
@@ -40,15 +38,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="150dp"
     tools:context=".WaitPlayerActivity">
 
     <TextView
         android:id="@+id/tv_team_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:textColor="#EEE"
         android:textSize="24sp"
         android:text="team" />
