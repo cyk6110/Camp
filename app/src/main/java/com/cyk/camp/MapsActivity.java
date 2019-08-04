@@ -322,7 +322,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         boolean match = false;
 
         // 選擇題
-        if(foo.substring(0,15).equals("multiple_choice")){
+        if(foo.length() > 15 && foo.substring(0,15).equals("multiple_choice")){
             if(foo.split("#")[1].equals(quests.get(team.current_quest).answer))
                 match = true;
         }

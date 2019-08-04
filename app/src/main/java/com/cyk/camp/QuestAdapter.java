@@ -54,16 +54,22 @@ public class QuestAdapter extends BaseAdapter {
         }
 
         String q = quest_list[position].question;
+        String a;
 
-        if(q.substring(0, 15).equals("multiple_choice")){
+        if(q.length() > 15 && q.substring(0, 15).equals("multiple_choice")){
             String[] arr = q.split("#");
             String s = context.getResources().getString(R.string.mul_choice, arr[1], arr[2], arr[3], arr[4], arr[5]);
+            a = "答案：" + (Integer.valueOf(quest_list[position].answer) + 1);
             holder.question.setText(s);
         }
         else {
             holder.question.setText(quest_list[position].question);
+            a = quest_list[position].answer;
         }
-        String a = "答案：" + Integer.toString(Integer.valueOf(quest_list[position].answer) + 1);
+
+        if(quest_list[position].question.equals("走到就過關"))
+            holder.question.setVisibility(View.GONE);
+
         holder.answer.setText(a);
         holder.hint.setText(quest_list[position].hint);
 

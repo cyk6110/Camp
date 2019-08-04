@@ -45,7 +45,7 @@ public class PopDialog extends DialogFragment {
         Spinner sp = view.findViewById(R.id.dialog_spinner_answer);
 
         // 選擇題
-        if(question.substring(0,15).equals("multiple_choice")){
+        if(question.length() > 15 && question.substring(0,15).equals("multiple_choice")){
 
 
             sp.setVisibility(View.VISIBLE);
@@ -81,7 +81,7 @@ public class PopDialog extends DialogFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
 
-                    if(!question.substring(0,15).equals("multiple_choice")) {
+                    if(question.length() < 15 || !question.substring(0,15).equals("multiple_choice")) {
 
                         if (!editText.getText().toString().matches("")) {
                             //Log.d("tag_dialog_answer", answer);

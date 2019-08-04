@@ -54,6 +54,7 @@
             android:layout_below="@id/et_setting_text"
             style="@style/EditText"
             android:layout_margin="5dp"
+            android:inputType="textPassword"
             android:hint="遊戲密碼" />
 
         <LinearLayout
@@ -61,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/et_setting_password"
-            android:layout_margin="10dp">
+            android:layout_margin="5dp">
 
             <Button
                 android:id="@+id/btn_setting_upload"
@@ -86,11 +87,12 @@
             android:id="@+id/img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/ll_upload"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="100dp"
-            android:layout_below="@id/ll_upload"/>
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="60dp"
+            android:scaleType="centerInside" />
 
     </RelativeLayout>
 
@@ -102,7 +104,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="25dp"
+        android:layout_margin="20dp"
         android:text="下一步"
         android:onClick="next"/>
 

@@ -14,7 +14,7 @@
         android:gravity="center"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
-        android:text="時間" />
+        android:text="0:00:00" />
 
     <RelativeLayout
         android:layout_width="match_parent"

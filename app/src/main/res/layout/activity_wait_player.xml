@@ -25,6 +25,13 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:text="遊戲敘述"/>
+        <ImageView
+            android:id="@+id/img_main_wait_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxHeight="200dp"
+            android:layout_marginTop="5dp"
+            android:scaleType="centerInside"/>
 
     </LinearLayout>
 
@@ -33,6 +40,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="150dp"
     tools:context=".WaitPlayerActivity">
 
     <TextView

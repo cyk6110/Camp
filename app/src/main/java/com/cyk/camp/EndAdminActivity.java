@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -23,6 +25,8 @@ import java.util.Comparator;
 public class EndAdminActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference storageRef = storage.getReference();
     private ValueEventListener rankListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -65,6 +69,9 @@ public class EndAdminActivity extends AppCompatActivity {
 
         myRef.removeValue();
         myRef.child("status").setValue(1);
+
+        StorageReference img = storageRef.child("images/main.jpg");
+        img.delete();
 
         Intent myIntent = new Intent(this, LoginActivity.class);
         startActivity(myIntent);

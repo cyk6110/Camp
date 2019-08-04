@@ -77,13 +77,12 @@ public class MonitorActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference();
 
-
-
-
         myRef.child("start_time").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 startTime = snapshot.getValue(Long.class);
+                tv_time = findViewById(R.id.tv_timer);
+                timerHandler.postDelayed(timerRunnable, 0);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -100,10 +99,6 @@ public class MonitorActivity extends AppCompatActivity {
         });
 
         myRef.child("teams").addValueEventListener(newTeamListener);
-
-        tv_time = findViewById(R.id.tv_timer);
-
-        timerHandler.postDelayed(timerRunnable, 0);
 
     }
 
