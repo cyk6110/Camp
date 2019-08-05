@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.cyk.camp"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -50,5 +50,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
+
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.3'
 
 }

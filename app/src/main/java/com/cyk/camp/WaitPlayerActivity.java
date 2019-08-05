@@ -26,6 +26,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static android.view.View.GONE;
 
 public class WaitPlayerActivity extends AppCompatActivity {
 
@@ -103,7 +111,7 @@ public class WaitPlayerActivity extends AppCompatActivity {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         Log.d("tag_load", "load failed");
-                        img.setVisibility(View.GONE);
+                        img.setVisibility(GONE);
                         return false;
                     }
                     @Override
@@ -111,14 +119,38 @@ public class WaitPlayerActivity extends AppCompatActivity {
                         Log.d("tag_load", "ready");
                         if(resource.getIntrinsicHeight() > resource.getIntrinsicWidth())
                             img.getLayoutParams().height = 300;
+                        findViewById(R.id.loadingPanel).setVisibility(GONE);
                         return false;
                     }
                 })
-
                 .into(img);
 
+        myRef.child("videoid").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                final YouTubePlayerView youTubePlayerView = findViewById(R.id.youtube_player_view);
+                youTubePlayerView.getYouTubePlayerWhenReady(new YouTubePlayerCallback() {
+                    @Override
+                    public void onYouTubePlayer(YouTubePlayer youTubePlayer) {
+                        String videoid = dataSnapshot.getValue(String.class);
+                        if(videoid != null) {
+                            youTubePlayerView.setVisibility(View.VISIBLE);
+                            youTubePlayer.loadVideo(videoid, 0);
+                        }
+                        else
+                            Log.d("tag_video", "no video");
+                    }
+                });
+                getLifecycle().addObserver(youTubePlayerView);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
 
     }
+
+
 
 
 

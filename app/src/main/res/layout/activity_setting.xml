@@ -33,7 +33,7 @@
             android:layout_below="@id/et_setting_name"
             style="@style/EditText"
             android:layout_margin="5dp"
-            android:hint="關卡範圍半徑(預設為15公尺)"
+            android:hint="關卡範圍半徑(選填，預設為15公尺)"
             android:inputType="number"/>
 
         <EditText
@@ -43,7 +43,7 @@
             android:layout_below="@id/et_setting_radius"
             style="@style/EditText"
             android:layout_margin="5dp"
-            android:hint="描述"
+            android:hint="遊戲簡介"
             android:inputType="text"/>
 
 
@@ -57,11 +57,20 @@
             android:inputType="textPassword"
             android:hint="遊戲密碼" />
 
+        <EditText
+            android:id="@+id/et_setting_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/et_setting_password"
+            style="@style/EditText"
+            android:layout_margin="5dp"
+            android:hint="YouTube影片(選填)" />
+
         <LinearLayout
             android:id="@+id/ll_upload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/et_setting_password"
+            android:layout_below="@id/et_setting_video"
             android:layout_margin="5dp">
 
             <Button
@@ -78,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="10dp"
-                android:text="主畫面圖片"
+                android:text="上傳介紹圖"
                 android:textSize="16sp" />
 
         </LinearLayout>

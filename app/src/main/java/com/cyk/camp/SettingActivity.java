@@ -25,6 +25,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SettingActivity extends AppCompatActivity {
 
     //private static final int PICKER = 100;
@@ -91,16 +94,18 @@ public class SettingActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference();
 
-        EditText et_name, et_radius, et_text, et_password;
+        EditText et_name, et_radius, et_text, et_password, et_video;
         et_name = findViewById(R.id.et_setting_name);
         et_radius = findViewById(R.id.et_setting_radius);
         et_text = findViewById(R.id.et_setting_text);
         et_password = findViewById(R.id.et_setting_password);
+        et_video = findViewById(R.id.et_setting_video);
 
         String name = et_name.getText().toString();
         String radius = et_radius.getText().toString();
         String text = et_text.getText().toString();
         String password = et_password.getText().toString();
+        String video = et_video.getText().toString();
 
         if(name.length() == 0)
             Toast.makeText(this, "請輸入遊戲名稱", Toast.LENGTH_SHORT).show();
@@ -117,10 +122,16 @@ public class SettingActivity extends AppCompatActivity {
             else
                 myRef.child("radius").setValue(15);
 
-            if(text.length() > 0)
-                myRef.child("description").setValue(text);
+            myRef.child("description").setValue(text);
 
             myRef.child("password").setValue(password);
+
+
+            if(video.length() != 0){
+                String videoid = extractYTId(video);
+                if(videoid != null)
+                    myRef.child("videoid").setValue(videoid);
+            }
 
             Intent myIntent = new Intent(this, QuestEditActivity.class);
             startActivity(myIntent);
@@ -129,6 +140,18 @@ public class SettingActivity extends AppCompatActivity {
             //return;
 
         }
+    }
 
+    public static String extractYTId(String ytUrl) {
+        String vId = null;
+        Pattern pattern = Pattern.compile(
+                ".*(?:youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=)([^#\\&\\?]*).*",
+                Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(ytUrl);
+        if(matcher.find()){
+            vId = matcher.group(1);
+            Log.d("tag_id", vId);
+        }
+        return vId;
     }
 }
