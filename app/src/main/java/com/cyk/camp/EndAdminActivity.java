@@ -67,7 +67,7 @@ public class EndAdminActivity extends AppCompatActivity {
         myRef.removeValue();
         myRef.child("status").setValue(1);
 
-        StorageReference img = storageRef.child("images/main.jpg");
+        StorageReference img = storageRef.child("images");
         img.delete();
 
         Intent myIntent = new Intent(this, LoginActivity.class);

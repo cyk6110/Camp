@@ -28,7 +28,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SettingActivity extends AppCompatActivity {
+public class BasicSettingActivity extends AppCompatActivity {
 
     //private static final int PICKER = 100;
 
@@ -39,11 +39,12 @@ public class SettingActivity extends AppCompatActivity {
     private ImageView img;
     private TextView tv_img;
     private Context context = this;
+    private Uri uri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_basic_setting);
         img = findViewById(R.id.img);
         tv_img = findViewById(R.id.tv_pic);
     }
@@ -51,34 +52,12 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        final Uri uri = data.getData();
-        if(uri != null) {
-            tv_img.setText("上傳中...");
-            final StorageReference up = storageRef.child("images/main.jpg");
-            up.putFile(uri).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Log.d("tag_path", "upload failed");
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                    // ...
-                    Log.d("tag_path", taskSnapshot.getMetadata().toString());
+        if(data != null) {
+            uri = data.getData();
 
-                }
-            }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    tv_img.setText(uri.getPath());
-                    GlideApp.with(context)
-                            .load(uri)
-                            .into(img);
-                }
-            });
-
+            GlideApp.with(context)
+                    .load(uri)
+                    .into(img);
 
         }
     }
@@ -88,11 +67,21 @@ public class SettingActivity extends AppCompatActivity {
         picker.setType("image/*");
         startActivityForResult(picker, 0);
     }
+    public void delete(View view){
+        uri = null;
+        tv_img.setText("圖片");
+        img.setImageResource(android.R.color.transparent);
+    }
 
     public void next(View view){
 
         db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference();
+
+        myRef.removeValue();
+        myRef.child("status").setValue(1);
+
+        storageRef.child("images/main.jpg").delete();
 
         EditText et_name, et_radius, et_text, et_password, et_video;
         et_name = findViewById(R.id.et_setting_name);
@@ -131,6 +120,11 @@ public class SettingActivity extends AppCompatActivity {
                 String videoid = extractYTId(video);
                 if(videoid != null)
                     myRef.child("videoid").setValue(videoid);
+            }
+
+            if(uri != null) {
+                final StorageReference up = storageRef.child("images/main.jpg");
+                up.putFile(uri);
             }
 
             Intent myIntent = new Intent(this, QuestEditActivity.class);

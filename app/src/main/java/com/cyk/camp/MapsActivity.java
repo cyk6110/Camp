@@ -51,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private FusedLocationProviderClient fusedLocationClient;
     private Team team = new Team();
     private ArrayList<Quest> quests = new ArrayList<>();
+    private ArrayList<String> keys = new ArrayList<>();
 
     private double latitude, longitude;
     private boolean get_team_key = false;
@@ -106,17 +107,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         myRef.child("status").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                status = snapshot.getValue(Integer.class);
-                if(status == 4){
-                    //end of the game
-                    SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-                    pref.edit().putBoolean("end", true).apply();
+                if(snapshot != null) {
+                    status = snapshot.getValue(Integer.class);
+                    if (status == 4) {
+                        //end of the game
+                        SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+                        pref.edit().putBoolean("end", true).apply();
 
-                    Intent myIntent = new Intent(context, EndPlayerActivity.class);
-                    startActivity(myIntent);
-                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    finish();
-                    return;
+                        Intent myIntent = new Intent(context, EndPlayerActivity.class);
+                        startActivity(myIntent);
+                        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        finish();
+                        return;
+                    }
                 }
             }
             @Override
@@ -174,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     for (DataSnapshot questSnapshot: snapshot.getChildren()) {
                         Quest q = questSnapshot.getValue(Quest.class);
                         quests.add(q);
+                        keys.add(questSnapshot.getKey());
                         //Log.d("tag_get_answer", q.answer);
                     }
                     quests_ready = true;
@@ -260,6 +264,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             Bundle args = new Bundle();
             args.putString("question", quests.get(team.current_quest).question);
+            args.putString("quest_key", keys.get(team.current_quest));
 
             DialogFragment dialog = new PopDialog();
             dialog.setArguments(args);

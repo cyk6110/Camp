@@ -82,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
             myRef.child("status").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    status = snapshot.getValue(Integer.class);
+                    if(snapshot != null)
+                        status = snapshot.getValue(Integer.class);
                     //Log.d("tag_admin", Integer.toString(status));
                 }
 
@@ -147,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 //if status = 1
                 if (status == 1) {
-                    myIntent = new Intent(this, SettingActivity.class);
+                    myIntent = new Intent(this, BasicSettingActivity.class);
                     startActivity(myIntent);
                 }
                 //if status = 2
@@ -248,8 +249,10 @@ public class LoginActivity extends AppCompatActivity {
         myRef.child("status").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                status = snapshot.getValue(Integer.class);
-                Login(completed);
+                if(snapshot != null) {
+                    status = snapshot.getValue(Integer.class);
+                    Login(completed);
+                }
             }
 
             @Override

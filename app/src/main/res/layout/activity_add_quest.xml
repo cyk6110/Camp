@@ -57,6 +57,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,24 +76,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
             android:background="@drawable/ic_slide_up"/>
-        <!---
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
             <LinearLayout
-                android:layout_width="30dp"
-                android:layout_height="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/line"/>
-            <LinearLayout
-                android:layout_width="30dp"
-                android:layout_height="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/line"/>
-            <LinearLayout
-                android:layout_width="30dp"
-                android:layout_height="5dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/line"/>
-                -->
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
             <EditText
                 android:id="@+id/et_question"
@@ -156,14 +152,22 @@
                         android:inputType="text" />
                 </LinearLayout>
             </LinearLayout>
-            <EditText
-                android:id="@+id/et_hint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                style="@style/EditText"
-                android:hint="提示"
-                android:inputType="text" />
+        <EditText
+            android:id="@+id/et_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            style="@style/EditText"
+            android:hint="提示"
+            android:inputType="text" />
+        <EditText
+            android:id="@+id/et_quest_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            style="@style/EditText"
+            android:hint="YouTube影片連結（選填）"
+            android:inputType="text" />
         <Spinner
             android:id="@+id/spinner_answer"
             android:layout_width="wrap_content"
@@ -177,6 +181,32 @@
             android:layout_margin="10dp">
         </Spinner>
         <LinearLayout
+            android:id="@+id/ll_quest_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
+            <Button
+                android:id="@+id/btn_video_upload"
+                android:background="@drawable/ic_upload"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:onClick="pick"
+                />
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic_delete"
+                android:onClick="delete"/>
+            <TextView
+                android:id="@+id/tv_quest_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:text="圖片"
+                android:textSize="16sp" />
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/layout_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -189,6 +219,8 @@
                 android:onClick="newQuest"
                 android:text="新增" />
         </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

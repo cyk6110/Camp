@@ -2,7 +2,11 @@ package com.cyk.camp;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
@@ -12,15 +16,41 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+
+import static android.view.View.GONE;
+
 public class PopDialog extends DialogFragment {
 
     public View view;
-    public String question;
+    public String question, key;
     public int answer = 0;
+
+    private FirebaseDatabase db;
+
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference storageRef = storage.getReference();
+
     public interface MyDialogFragmentListener {
         public void onReturnValue(String foo);
     }
@@ -35,20 +65,75 @@ public class PopDialog extends DialogFragment {
 
         Bundle mArgs = getArguments();
         question = mArgs.getString("question");
+        key = mArgs.getString("quest_key");
 
         Log.d("tag_question", question);
 
         TextView tv = view.findViewById(R.id.tv_quest_dialog_question);
         final EditText editText = view.findViewById(R.id.et_quest_dialog_answer);
         Spinner sp = view.findViewById(R.id.dialog_spinner_answer);
+        final ImageView img_dialog = view.findViewById(R.id.img_dialog);
 
-        // 選擇題
+        final StorageReference main_img = storageRef.child("images/" + key + ".jpg");
+
+
+        db = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = db.getReference();
+
+        //撈圖
+        GlideApp.with(this)
+                .load(main_img)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.d("tag_load", main_img.getPath());
+                        img_dialog.setVisibility(GONE);
+                        view.findViewById(R.id.loadingPanel).setVisibility(GONE);
+                        return false;
+                    }
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d("tag_load", "ready");
+                        if(resource.getIntrinsicHeight() > resource.getIntrinsicWidth())
+                            img_dialog.getLayoutParams().height = 300;
+                        view.findViewById(R.id.loadingPanel).setVisibility(GONE);
+                        return false;
+                    }
+                })
+                .into(img_dialog);
+
+        //撈影片
+        myRef.child("quest_videoid").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                final YouTubePlayerView youTubePlayerView = view.findViewById(R.id.youtube_player_dialog);
+                youTubePlayerView.getYouTubePlayerWhenReady(new YouTubePlayerCallback() {
+                    @Override
+                    public void onYouTubePlayer(YouTubePlayer youTubePlayer) {
+                        String videoid = dataSnapshot.getValue(String.class);
+                        if(videoid != null) {
+                            youTubePlayerView.setVisibility(View.VISIBLE);
+                            youTubePlayer.loadVideo(videoid, 0);
+                        }
+                        else
+                            Log.d("tag_video", "no video");
+                    }
+                });
+                getLifecycle().addObserver(youTubePlayerView);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
         if(question.length() > 15 && question.substring(0,15).equals("multiple_choice")){
-
+            // 選擇題
 
             sp.setVisibility(View.VISIBLE);
-            // 設選項
-            // 設listener
+            // 設spinner選項
+            // 設spinner listener
             ArrayAdapter<CharSequence> adapter_answer = ArrayAdapter.createFromResource(getActivity(), R.array.spinner_answer,
                     android.R.layout.simple_spinner_item);
             adapter_answer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

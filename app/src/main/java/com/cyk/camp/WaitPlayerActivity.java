@@ -46,7 +46,7 @@ public class WaitPlayerActivity extends AppCompatActivity {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             // Get Post object and use the values to update the UI
-            if(dataSnapshot.getValue(Integer.class) == 3){
+            if(dataSnapshot != null && dataSnapshot.getValue(Integer.class) == 3){
 
                 //跳轉到遊戲畫面
                 Intent myIntent = new Intent(context, MapsActivity.class);
@@ -103,6 +103,7 @@ public class WaitPlayerActivity extends AppCompatActivity {
 
         Log.d("tag_url", main_img.getPath());
 
+        //撈圖
         GlideApp.with(this)
                 .load(main_img)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -112,6 +113,7 @@ public class WaitPlayerActivity extends AppCompatActivity {
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         Log.d("tag_load", "load failed");
                         img.setVisibility(GONE);
+                        findViewById(R.id.loadingPanel).setVisibility(GONE);
                         return false;
                     }
                     @Override
@@ -125,6 +127,7 @@ public class WaitPlayerActivity extends AppCompatActivity {
                 })
                 .into(img);
 
+        //撈影片
         myRef.child("videoid").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
@@ -149,11 +152,5 @@ public class WaitPlayerActivity extends AppCompatActivity {
         });
 
     }
-
-
-
-
-
-
 
 }

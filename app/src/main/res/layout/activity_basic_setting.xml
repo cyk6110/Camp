@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingActivity"
+    tools:context=".BasicSettingActivity"
     android:orientation="horizontal"
     android:background="@drawable/background">
 
@@ -64,7 +64,7 @@
             android:layout_below="@id/et_setting_password"
             style="@style/EditText"
             android:layout_margin="5dp"
-            android:hint="YouTube影片(選填)" />
+            android:hint="YouTube影片連結（選填）" />
 
         <LinearLayout
             android:id="@+id/ll_upload"
@@ -80,14 +80,18 @@
                 android:layout_height="50dp"
                 android:onClick="upload"
                 />
-
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic_delete"
+                android:onClick="delete"/>
             <TextView
                 android:id="@+id/tv_pic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="10dp"
-                android:text="上傳介紹圖"
+                android:text="圖片"
                 android:textSize="16sp" />
 
         </LinearLayout>
